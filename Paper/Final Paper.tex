@@ -1,0 +1,65 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{hyperref}
+\usepackage{graphicx}
+\usepackage{enumerate}
+\usepackage[left=1in,right=1in,top=1in,bottom=1in]{geometry}
+\author{Daniel Deutsch and Daniel Crankshaw}
+\title{Title}
+\date{}
+\begin{document}
+\maketitle
+\section*{Overview}
+The idea for our project is to perform handwritten digit classification and compare the accuracies of several machine learning algorithms. We will be getting the data from the machine learning competition website, www.kaggle.com. We intend to compare the performance of two machine learning algorithms - Neural Networks and K-Nearest-Neighbors - on handwritten digit classification. We also intend to examine the effect of varying certain parameters of each algorithm. For Neural Networks, we will use both a two layer and a three layer network. For both nets, we will also look at the effects of varying the number of hidden nodes. If we have time, we would also like to implement a simple convolutional network. For nearest neighbors, we will look at using an epsilon ball approach and a k nearest neighbors approach. In both cases, we will examine weighted and unweighted variants.
+
+\section*{Resources}
+The data for our project will be coming from the \href{http://yann.lecun.com/exdb/mnist/index.html}{MNIST database of handwritten digits}. We don’t anticipate needing any other extra libraries to implement our algorithms.
+
+\section*{Milestones}
+Must achieve
+Implementation of a two layer neural network
+Implementation of k nearest neighbors
+Comparisons of prediction efficiency and accuracy between the two algorithms
+Expect to achieve
+Efficiency and accuracy results as a function of the input parameters for each algorithm
+Implementation of an epsilon ball nearest neighbors algorithm
+Implementation of a three layer neural network
+Would like to achieve
+Convolutional neural network implementation
+
+\section*{Final Paper Outline}
+\begin{enumerate}[I.]
+\item Introduction
+\item Methodology
+\begin{enumerate}
+\item description of algorithms
+\item description of parameters we are going to tune
+\end{enumerate}
+\item Results of algorithms
+\item Comparisons within each algorithm
+\item Comparisons between algorithms
+\item Conclusion and final recommendation
+\end{enumerate}
+
+
+Neural network
+	convolutional network - stretch goal
+	handwritten letters - stretch goal
+
+nearest neighbors - look at different neighbor picking algorithms
+
+http://yann.lecun.com/exdb/mnist/index.html
+
+Resources: http://yann.lecun.com/exdb/mnist/index.html
+http://www.kaggle.com/c/digit-recognizer 
+
+Data: http://www.kaggle.com/c/digit-recognizer/download/train.csv
+http://www.kaggle.com/c/digit-recognizer/download/test.csv
+
+Methods: 
+Neural networks
+K-NN
+\end{document}
