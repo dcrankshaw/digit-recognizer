@@ -13,10 +13,14 @@
 \begin{document}
 \maketitle
 \section*{Overview}
-The idea for our project is to perform handwritten digit classification and compare the accuracies of several machine learning algorithms. We will be getting the data from the machine learning competition website, www.kaggle.com. We intend to compare the performance of two machine learning algorithms - Neural Networks and K-Nearest-Neighbors - on handwritten digit classification. We also intend to examine the effect of varying certain parameters of each algorithm. For Neural Networks, we will use both a two layer and a three layer network. For both nets, we will also look at the effects of varying the number of hidden nodes. If we have time, we would also like to implement a simple convolutional network. For nearest neighbors, we will look at using an epsilon ball approach and a k nearest neighbors approach. In both cases, we will examine weighted and unweighted variants.
+The idea for our project is to perform handwritten digit classification and compare the accuracies of several machine learning algorithms on the data. We will be getting the data from the machine learning competition website, www.kaggle.com. We intend to compare the performance of two machine learning algorithms, Neural Networks and K-Nearest Neighbors, on handwritten digit classification. We also intend to examine the effect of varying certain parameters of each algorithm. 
+
+For Neural Networks, we will use both a two layer and a three layer network. For both networks, we will also look at the effects of varying the number of hidden nodes. If we have time, we would also like to implement a simple convolutional network to compare it with the neural networks. 
+
+For nearest neighbors, we will look at using an epsilon ball approach and a standard k-nearest neighbors approach. In both cases, we will examine unweighted and weighted based on distance variants.
 
 \section*{Resources}
-The data for our project will be coming from the \href{http://yann.lecun.com/exdb/mnist/index.html}{MNIST database of handwritten digits}. We don’t anticipate needing any other extra libraries to implement our algorithms.
+The data for our project will be coming from the \href{http://yann.lecun.com/exdb/mnist/index.html}{MNIST database of handwritten digits}, which is a collection of handwritten digits, 0-9. We don’t anticipate needing any other extra libraries to implement our algorithms.
 
 \section*{Milestones}
 Must achieve:
@@ -41,12 +45,12 @@ Would like to achieve:
 \item Introduction
 \item Methodology
 \begin{enumerate}
-\item description of algorithms
-\item description of parameters we are going to tune
+\item description of algorithms and the motivation for why we selected these two algorithms to compare
+\item description of parameters we are going to tune and how they change the algorithms
 \end{enumerate}
 \item Results of algorithms
-\item Comparisons within each algorithm
-\item Comparisons between algorithms
+\item Comparisons within each algorithm (meaning the variation of the parameters to decide which is the best as well as which version of the algorithms are best)
+\item Comparisons between algorithms (neural networks vs. k-NN)
 \item Conclusion and final recommendation
 \end{enumerate}
 
