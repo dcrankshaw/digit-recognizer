@@ -9,11 +9,17 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.LinkedList;
-import java.util.List;
-import org.apache.commons.cli.*;
 
-import edu.jhu.ml.data.Instance;
+import org.apache.commons.cli.Option;
+import org.apache.commons.cli.OptionBuilder;
+
+import edu.jhu.ml.evaluator.AccuracyEvaluator;
+import edu.jhu.ml.evaluator.Evaluator;
+import edu.jhu.ml.evaluator.RegressionEvaluator;
 import edu.jhu.ml.predictor.Predictor;
+import edu.jhu.ml.predictor.nearestneighbor.DistanceWeightedKNNPredictor;
+import edu.jhu.ml.predictor.nearestneighbor.EpsilonBallKNNPredictor;
+import edu.jhu.ml.predictor.nearestneighbor.SimpleKNNPredictor;
 import edu.jhu.ml.utilities.CommandLineUtilities;
 import edu.jhu.ml.utilities.DataReader;
 
@@ -33,7 +39,7 @@ public class Classify
 	
 	public static void main(String[] args)
 	{
-		String[] mandatoryArgs = {"mode", "algorithm", "data"};
+		String[] mandatoryArgs = {"mode", "algorithm", "data", "model"};
 		Classify.createCommandLineOptions();
 		CommandLineUtilities.initCommandLineParameters(args, Classify.options, mandatoryArgs);
 		
@@ -42,22 +48,45 @@ public class Classify
 		String data = CommandLineUtilities.getOptionValue("data");
 		String model = CommandLineUtilities.getOptionValue("model");
 		
+		int k = 5;
+		if (CommandLineUtilities.hasArg("k"))
+			k = CommandLineUtilities.getOptionValueAsInt("k");
+		
+		double epsilon = 0.1;
+		if (CommandLineUtilities.hasArg("epsilon"))
+			epsilon = CommandLineUtilities.getOptionValueAsFloat("epsilon");
+		
 		if (mode.equals("train"))
 		{
 			DataReader reader = new DataReader(data, true);
-			List<Instance> instances = reader.readNumberOfInstances(1000);
 			Predictor predictor = null;
 			
 			if (algorithm.equals("neural_network"))
 				predictor = null;
+			else if (algorithm.equals("knn"))
+				predictor = new SimpleKNNPredictor(reader, k);
+			else if (algorithm.equals("knn_distance"))
+				predictor = new DistanceWeightedKNNPredictor(reader, k);
+			else if (algorithm.equals("knn_epsilon"))
+				predictor = new EpsilonBallKNNPredictor(reader, epsilon);
 			
-			predictor.train(instances);
+			predictor.train();
 			Classify.saveObject(predictor, model);
 		}
 		else if (mode.equals("test"))
 		{
-			DataReader reader = new DataReader(data, false);
-			List<Instance> instances = reader.readNumberOfInstances(1000);
+			// Will pass true here because we will be testing it on CV
+			DataReader reader = new DataReader(data, true);
+			
+			Predictor predictor = (Predictor) Classify.loadObject(model);
+			
+			Evaluator evaluator = null;
+			if (algorithm.equals("neural_network"))
+				evaluator = new AccuracyEvaluator();
+			else
+				evaluator = new RegressionEvaluator();
+			
+			evaluator.evaluate(reader, predictor);
 		}
 	}
 	
@@ -70,6 +99,8 @@ public class Classify
 		Classify.registerOption("data", "String", true, "The path to the data file.");
 		Classify.registerOption("algorithm", "String", true, "The algorithm to use.");
 		Classify.registerOption("model", "String", true, "The path to the model file.");
+		Classify.registerOption("k", "String", true, "The number of neighbors for k-Nearest Neighbors.");
+		Classify.registerOption("epsilon", "String", true, "The distance to search for the k-Nearest Neighbors epsilon-ball algorithm.");
 	}
 	
 	/**

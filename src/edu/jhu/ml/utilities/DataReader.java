@@ -26,6 +26,11 @@ public class DataReader
 	private int numberOfInstances;
 	
 	/**
+	 * The total number of instances that have already been read.
+	 */
+	private int numberInstancesRead;
+	
+	/**
 	 * The scanner that will read the file.
 	 */
 	private Scanner scanner;
@@ -44,6 +49,7 @@ public class DataReader
 	public DataReader(String file, boolean hasLabels)
 	{
 		this.numberOfInstances = 0;
+		this.numberInstancesRead = 0;
 		this.hasLabels = hasLabels;
 		
 		try
@@ -96,6 +102,7 @@ public class DataReader
 			}
 			
 			instances.add(new Instance(featureVector, label));
+			this.numberInstancesRead++;
 		}
 		
 		return instances;
@@ -110,5 +117,14 @@ public class DataReader
 	{
 		int number = (int) Math.round(this.numberOfInstances * percent);
 		return this.readNumberOfInstances(number);
+	}
+	
+	/**
+	 * Reads in all of the remaining instances to be read.
+	 * @return The instances.
+	 */
+	public List<Instance> readAllInstances()
+	{
+		return this.readNumberOfInstances(this.numberOfInstances - this.numberInstancesRead);
 	}
 }
