@@ -1,0 +1,6 @@
+*.class
+*.aux
+*.out
+*.log
+
+*.pdf
