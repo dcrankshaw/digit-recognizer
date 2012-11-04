@@ -6,7 +6,6 @@ import edu.jhu.ml.data.Instance;
 import edu.jhu.ml.data.Pair;
 import edu.jhu.ml.data.label.Label;
 import edu.jhu.ml.data.label.RegressionLabel;
-import edu.jhu.ml.utilities.DataReader;
 
 /**
  * This class represents a k-nearest neighbor algorithm that weights the
@@ -24,12 +23,12 @@ public class DistanceWeightedKNNPredictor extends SimpleKNNPredictor
 
 	/**
 	 * The constructor for the class.
-	 * @param instances The instances to train on.
+	 * @param fileName The path to the data file.
 	 * @param k The number of neighbors to consider.
 	 */
-	public DistanceWeightedKNNPredictor(DataReader reader, int k)
+	public DistanceWeightedKNNPredictor(String fileName, int k)
 	{
-		super(reader, k);
+		super(fileName, k);
 	}
 
 	/**
@@ -41,6 +40,7 @@ public class DistanceWeightedKNNPredictor extends SimpleKNNPredictor
 		double label = 0;
 		double[] lambdas = this.calculateLambdas(nearest);
 
+		// TODO Fix this. I think the labels will have to be -1 here.
 		for (int i = 0; i < nearest.size(); i++)
 			label += lambdas[i] * ((RegressionLabel) nearest.get(i).getValue().getLabel()).getLabel();
 

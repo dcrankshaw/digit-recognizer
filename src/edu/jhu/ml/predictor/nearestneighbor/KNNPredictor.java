@@ -7,6 +7,7 @@ import java.util.TreeSet;
 
 import edu.jhu.ml.data.Instance;
 import edu.jhu.ml.data.Pair;
+import edu.jhu.ml.data.label.ClassificationLabel;
 import edu.jhu.ml.data.label.Label;
 import edu.jhu.ml.data.label.RegressionLabel;
 import edu.jhu.ml.predictor.Predictor;
@@ -35,9 +36,9 @@ public abstract class KNNPredictor extends Predictor
 	 * @param instances The training instances.
 	 * @param k The number of nearest neighbors to use.
 	 */
-	public KNNPredictor(DataReader dataReader)
+	public KNNPredictor(String fileName)
 	{
-		super(dataReader);
+		super(fileName);
 	}
 	
 	/**
@@ -47,6 +48,7 @@ public abstract class KNNPredictor extends Predictor
 	public void train()
 	{
 		// nothing
+		this.dataReader = null;
 	}
 
 	/**
@@ -55,6 +57,12 @@ public abstract class KNNPredictor extends Predictor
 	 */
 	public Label predict(Instance instance)
 	{
+		if (this.dataReader == null)
+		{
+			this.dataReader = new DataReader(this.fileName, true);
+			this.instances = this.dataReader.readAllInstances();			
+		}
+
 		List<Pair<Double, Instance>> nearest = getNearest(instance);
 		return predictLabel(instance, nearest);
 	}
@@ -98,7 +106,7 @@ public abstract class KNNPredictor extends Predictor
 		double label = 0;
 
 		for (Pair<Double, Instance> pair : nearest)
-			label += ((RegressionLabel) pair.getValue().getLabel()).getLabel();
+			label += ((ClassificationLabel) pair.getValue().getLabel()).getLabel();
 		
 		label = label / nearest.size();
 		return new RegressionLabel(label);

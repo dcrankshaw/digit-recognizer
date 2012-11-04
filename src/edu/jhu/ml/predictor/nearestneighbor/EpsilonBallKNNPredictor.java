@@ -1,10 +1,10 @@
 package edu.jhu.ml.predictor.nearestneighbor;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import edu.jhu.ml.data.Instance;
 import edu.jhu.ml.data.Pair;
-import edu.jhu.ml.utilities.DataReader;
 
 /**
  * This class represents the k-Nearest Neighbors epsilon-ball algorithm
@@ -27,12 +27,12 @@ public class EpsilonBallKNNPredictor extends KNNPredictor
 	
 	/**
 	 * The constructor for the predictor.
-	 * @param dataReader The DataReader that has access to the input file.
+	 * @param fileName The location of the data file.
 	 * @param epsilon The size of the epsilon-ball.
 	 */
-	public EpsilonBallKNNPredictor(DataReader dataReader, double epsilon)
+	public EpsilonBallKNNPredictor(String fileName, double epsilon)
 	{
-		super(dataReader);
+		super(fileName);
 		this.epsilon = epsilon;
 	}
 
@@ -43,8 +43,17 @@ public class EpsilonBallKNNPredictor extends KNNPredictor
 	 */
 	protected List<Pair<Double, Instance>> getNearest(Instance instance)
 	{
+		List<Pair<Double, Instance>> nearest = new ArrayList<Pair<Double, Instance>>();
 		
-		return null;
+		for (Instance example : this.instances)
+		{
+			double distance = this.distance(instance, example);
+			if (distance < this.epsilon)
+				nearest.add(new Pair<Double, Instance>(distance, example));
+		}
+		
+		
+		return nearest;
 	}
 
 	

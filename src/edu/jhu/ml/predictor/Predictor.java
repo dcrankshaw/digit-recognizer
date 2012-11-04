@@ -24,12 +24,17 @@ public abstract class Predictor implements Serializable
 	protected DataReader dataReader;
 	
 	/**
+	 * The file name of the data.
+	 */
+	protected String fileName;
+	
+	/**
 	 * The constructor of the Predictor.
 	 * @param reader The DataReader that has access to the data on file.
 	 */
-	public Predictor(DataReader reader)
+	public Predictor(String fileName)
 	{
-		this.dataReader = reader;
+		this.fileName = fileName;
 	}
 	
 	/**

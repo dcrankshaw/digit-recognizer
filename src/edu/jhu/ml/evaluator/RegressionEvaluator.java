@@ -3,6 +3,7 @@ package edu.jhu.ml.evaluator;
 import java.util.List;
 
 import edu.jhu.ml.data.Instance;
+import edu.jhu.ml.data.label.ClassificationLabel;
 import edu.jhu.ml.data.label.RegressionLabel;
 import edu.jhu.ml.predictor.Predictor;
 import edu.jhu.ml.utilities.DataReader;
@@ -20,7 +21,7 @@ public class RegressionEvaluator extends Evaluator
 		for (Instance instance : instances)
 		{
 			double predictedLabel = ((RegressionLabel) predictor.predict(instance)).getLabel();
-			double trueLabel = ((RegressionLabel) instance.getLabel()).getLabel();
+			double trueLabel = ((ClassificationLabel) instance.getLabel()).getLabel();
 			
 			error += Math.abs(predictedLabel - trueLabel);
 		}

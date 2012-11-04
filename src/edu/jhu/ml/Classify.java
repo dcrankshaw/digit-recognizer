@@ -58,17 +58,16 @@ public class Classify
 		
 		if (mode.equals("train"))
 		{
-			DataReader reader = new DataReader(data, true);
 			Predictor predictor = null;
 			
 			if (algorithm.equals("neural_network"))
 				predictor = null;
 			else if (algorithm.equals("knn"))
-				predictor = new SimpleKNNPredictor(reader, k);
+				predictor = new SimpleKNNPredictor(data, k);
 			else if (algorithm.equals("knn_distance"))
-				predictor = new DistanceWeightedKNNPredictor(reader, k);
+				predictor = new DistanceWeightedKNNPredictor(data, k);
 			else if (algorithm.equals("knn_epsilon"))
-				predictor = new EpsilonBallKNNPredictor(reader, epsilon);
+				predictor = new EpsilonBallKNNPredictor(data, epsilon);
 			
 			predictor.train();
 			Classify.saveObject(predictor, model);

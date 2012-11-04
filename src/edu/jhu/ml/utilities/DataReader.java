@@ -2,6 +2,7 @@ package edu.jhu.ml.utilities;
 
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -17,8 +18,13 @@ import edu.jhu.ml.data.label.ClassificationLabel;
  * 
  * @author Daniel Deutsch
  */
-public class DataReader
+public class DataReader implements Serializable
 {
+	/**
+	 * Required to serialize the object.
+	 */
+	private static final long serialVersionUID = 1L;
+
 	/**
 	 * The total number of instances in the file to be read. Used for
 	 * calculating the percent of examples to be read.

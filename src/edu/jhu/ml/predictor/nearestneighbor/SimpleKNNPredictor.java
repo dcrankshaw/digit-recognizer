@@ -6,7 +6,6 @@ import java.util.PriorityQueue;
 
 import edu.jhu.ml.data.Instance;
 import edu.jhu.ml.data.Pair;
-import edu.jhu.ml.utilities.DataReader;
 
 /**
  * This class represents the k-nearest neighbors algorithm which computes
@@ -29,12 +28,12 @@ public class SimpleKNNPredictor extends KNNPredictor
 
 	/**
 	 * The constructor for the class.
-	 * @param instances The training instances.
+	 * @param fileName The path to the data file.
 	 * @param k The number of neighbors to use.
 	 */
-	public SimpleKNNPredictor(DataReader dataReader, int k)
+	public SimpleKNNPredictor(String fileName, int k)
 	{
-		super(dataReader);
+		super(fileName);
 		this.k = k;
 	}
 	
