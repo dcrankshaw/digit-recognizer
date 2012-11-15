@@ -2,3 +2,22 @@ This is a place for us to store any notes or thoughts.
 
 There is a class called NavigableSet in Java that will probably be useful for the
 epsilon ball nearest neighbor implementation.
+
+
+Problems:
+- so the data is really, really big. I've broken up the training set
+into a train.txt and dev.txt (train is first 30,000 examples, dev is the other
+12,000). The issue is that when we go to predict for k-NN, we have to make
+12,000 x 30,000 comparisons, and a lot of the instances are in a pretty high
+dimension, so it gets even worse.
+
+We should talk about how we're going to go about solving this problem. Also as I
+type this, I have realized that the data is no longer binary and that there are
+10 possible labels. I'm not sure if any of the code should be changed because of that.
+I will think about that later.
+
+- Because the data is so large, when the program writes it to the model file, I didn't
+want it to write 30,000 examples and take up 60MB of space. As a result, I have made it
+so that the DataReader class (which is essentially a wrapper of a Scanner) becomes null
+when it's about to be written to the file. Then when it starts to predict again, it will
+reload the data. That way we avoid writing all of the data to a file during training.
