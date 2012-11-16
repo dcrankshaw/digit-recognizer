@@ -23,20 +23,21 @@ public class NeuralNetwork extends Predictor
 	private static final long serialVersionUID = 1L;
 
 	/**
-	 * The number of nodes in the input layer of the neural network.
+	 * The number of nodes in the input layer of the neural network. Add
+	 * 1 to account for the bias unit.
 	 */
-	private static final int INPUT_SIZE = 128;
+	private static final int INPUT_SIZE = 128 + 1; // 128
 
 	/**
 	 * The number of hidden nodes in the only hidden layer
-	 * of the neural network.
+	 * of the neural network. Add 1 to account for the bias unit.
 	 */
-	private static final int HIDDEN_SIZE = 25;
+	private static final int HIDDEN_SIZE = 25 + 1;
 
 	/**
 	 * The number of output nodes of the neural network.
 	 */
-	private static final int OUTPUT_SIZE = 26;
+	private static final int OUTPUT_SIZE = 26; // 26
 
 	/**
 	 * The transition weights from the input layer to the first hidden layer.
@@ -72,16 +73,23 @@ public class NeuralNetwork extends Predictor
 
 		// perform random initialization between -1 and 1
 		for (int i = 0; i < HIDDEN_SIZE; i++)
-		{
+		{	
 			for (int j = 0; j < INPUT_SIZE; j++)
-				this.firstWeights.set(i, j, random.nextDouble() * 2 - 1);
+				this.firstWeights.set(i, j, random.nextDouble() * 0.05 - 0.25);
 		}
 
 		for (int i = 0; i < OUTPUT_SIZE; i++)
 		{
 			for (int j = 0; j < HIDDEN_SIZE; j++)
-				this.secondWeights.set(i, j, random.nextDouble() * 2 - 1);
+				this.secondWeights.set(i, j, random.nextDouble() * 0.05 - 0.25);
 		}
+		
+		// include the bias units
+		for (int i = 0; i < HIDDEN_SIZE; i++)
+			this.firstWeights.set(i, 0, 1);
+		
+		for (int i = 0; i < OUTPUT_SIZE; i++)
+			this.secondWeights.set(i, 0, 1);
 	}
 
 	/**
@@ -124,6 +132,7 @@ public class NeuralNetwork extends Predictor
 				cost += label[k][0] * Math.log(prediction[k]) +
 						(1 - label[k][0]) * Math.log(1 - prediction[k]);
 			}
+//			System.out.println("break");
 		}
 		
 		return -1 * cost;
@@ -157,11 +166,9 @@ public class NeuralNetwork extends Predictor
 	private void backPropagation(List<Instance> instances)
 	{
 		// Delta1
-		// the delta for the transition from the input layer to the hidden layer
 		this.firstGradient = new Matrix(new double[HIDDEN_SIZE][INPUT_SIZE]);
 
 		// Delta2
-		// the delta for the transition from the hidden layer to the output layer
 		this.secondGradient = new Matrix(new double[OUTPUT_SIZE][HIDDEN_SIZE]);
 
 		for (Instance instance : instances)
@@ -285,9 +292,12 @@ public class NeuralNetwork extends Predictor
 	private Matrix convertInstanceToMatrix(Instance instance)
 	{
 		Matrix matrix = new Matrix(INPUT_SIZE, 1);
+		
+		// the +1 is to make room for the bias unit
 		for (Pair<Integer, Double> pair : instance.getFeatureVector())
-			matrix.set(pair.getKey(), 0, pair.getValue());
-
+			matrix.set(pair.getKey() + 1, 0, pair.getValue());
+		matrix.set(0, 0, 1);
+		
 		return matrix;
 	}
 
@@ -327,7 +337,7 @@ public class NeuralNetwork extends Predictor
 	/**
 	 * Gets the likelihood that an Instance is a specific letter.
 	 * @param instance The Instance to classify.
-	 * @return An array of likelihoods where the 0th index coressponds
+	 * @return An array of likelihoods where the 0th index corresponds
 	 * to the letter 'a'.
 	 */
 	public double[] predictProbabilities(Instance instance)
