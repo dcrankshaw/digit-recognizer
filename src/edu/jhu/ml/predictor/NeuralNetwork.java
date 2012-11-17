@@ -13,6 +13,15 @@ import edu.jhu.ml.data.label.Label;
  * The implementation of an artificial neural network which will be used
  * to perform handwritten character recognition.
  * 
+ * Definitions:
+ * - X = input
+ * - Y = real labels
+ * - z_i = the values of the nodes in the ith layer
+ * - a_i = sigmoid(z_i); the activation function applied to the layer
+ * - theta_i = transition weights from layer i to layer i + 1
+ * - d_i = the error assigned to the nodes in layer i
+ * - Delta_i = the gradient calculated from layer i to layer i + 1
+ * 
  * @author Daniel Deutsch
  */
 public class NeuralNetwork extends Predictor
@@ -26,13 +35,13 @@ public class NeuralNetwork extends Predictor
 	 * The number of nodes in the input layer of the neural network. Add
 	 * 1 to account for the bias unit.
 	 */
-	private static final int INPUT_SIZE = 128 + 1; // 128
+	private static final int INPUT_SIZE = 128; // 128
 
 	/**
 	 * The number of hidden nodes in the only hidden layer
 	 * of the neural network. Add 1 to account for the bias unit.
 	 */
-	private static final int HIDDEN_SIZE = 25 + 1;
+	private static final int HIDDEN_SIZE = 25;
 
 	/**
 	 * The number of output nodes of the neural network.
@@ -66,7 +75,7 @@ public class NeuralNetwork extends Predictor
 
 	public NeuralNetwork()
 	{
-		Random random = new Random();
+		Random random = new Random(4);
 
 		this.firstWeights = new Matrix(HIDDEN_SIZE, INPUT_SIZE);
 		this.secondWeights = new Matrix(OUTPUT_SIZE, HIDDEN_SIZE);
@@ -85,11 +94,11 @@ public class NeuralNetwork extends Predictor
 		}
 		
 		// include the bias units
-		for (int i = 0; i < HIDDEN_SIZE; i++)
-			this.firstWeights.set(i, 0, 1);
-		
-		for (int i = 0; i < OUTPUT_SIZE; i++)
-			this.secondWeights.set(i, 0, 1);
+//		for (int i = 0; i < HIDDEN_SIZE; i++)
+//			this.firstWeights.set(i, 0, 1);
+//		
+//		for (int i = 0; i < OUTPUT_SIZE; i++)
+//			this.secondWeights.set(i, 0, 1);
 	}
 
 	/**
@@ -99,16 +108,16 @@ public class NeuralNetwork extends Predictor
 	public void train(List<Instance> instances)
 	{
 		int iterations = 25;
-		double learningRate = 0.01;
+		double learningRate = 1;
 
 		for (int i = 0; i < iterations; i++)
 		{
+			System.out.println("Starting iteration " + i);
+			System.out.println("Cost: " + this.calculateCost(instances));
+			
 			this.backPropagation(instances);
 			this.firstWeights = this.firstWeights.plus(this.firstGradient.times(learningRate));
 			this.secondWeights = this.secondWeights.plus(this.secondGradient.times(learningRate));
-
-			System.out.println("Done iteration: " + i);
-			System.out.println(this.calculateCost(instances));
 		}
 	}
 
@@ -121,18 +130,20 @@ public class NeuralNetwork extends Predictor
 	private double calculateCost(List<Instance> instances)
 	{
 		double cost = 0;
-		
+				
 		for (Instance instance : instances)
 		{
 			double[] prediction = this.forwardPropagation(instance);
-			double[][] label = this.convertLabelToMatrix((ClassificationLabel) instance.getLabel()).getArray();
+			int label = ((ClassificationLabel) instance.getLabel()).getLabel();
 			
 			for (int k = 0; k < OUTPUT_SIZE; k++)
 			{
-				cost += label[k][0] * Math.log(prediction[k]) +
-						(1 - label[k][0]) * Math.log(1 - prediction[k]);
+				if (k == label)
+					cost += Math.log(prediction[k]);
+				else
+					cost += Math.log(1 - prediction[k]);
 			}
-//			System.out.println("break");
+			System.out.println("break");
 		}
 		
 		return -1 * cost;
@@ -145,16 +156,21 @@ public class NeuralNetwork extends Predictor
 	 */
 	private double[] forwardPropagation(Instance instance)
 	{
+		// X
 		Matrix input = this.convertInstanceToMatrix(instance);
+		
+		// z2 = Theta1 * X
 		this.hiddenNodes = this.firstWeights.times(input);
-		this.sigmoid(this.hiddenNodes);
 
-		Matrix output = this.secondWeights.times(this.hiddenNodes);
-		this.sigmoid(output);
+		// z3 = Theta2 * g(z2)
+		Matrix output = this.secondWeights.times(this.sigmoid(this.hiddenNodes));
+		
+		// a3 = g(z3)
+		Matrix sigmoidOutput = this.sigmoid(output);
 
 		double[] array = new double[OUTPUT_SIZE];
 		for (int i = 0; i < OUTPUT_SIZE; i++)
-			array[i] = output.get(i, 0);
+			array[i] = sigmoidOutput.get(i, 0);
 
 		return array;
 	}
@@ -178,6 +194,7 @@ public class NeuralNetwork extends Predictor
 
 			// a2
 			// this.hiddenNodes
+			Matrix a2 = this.sigmoidGradient(this.hiddenNodes);
 
 			// a3 = output
 			Matrix prediction = this.convertArrayToMatrix(this.forwardPropagation(instance));
@@ -188,15 +205,19 @@ public class NeuralNetwork extends Predictor
 			// d3 = output - real labels
 			Matrix thirdError = prediction.minus(actualLabel);
 
-			// d2 = theta_2^T * d3 .* a2 .* (1 - a2)
+			// d2 = theta_2^T * d3 .* g'(z2)
 			Matrix secondError = this.elementWiseMultiplication(this.secondWeights.transpose().times(thirdError), this.sigmoidGradient(this.hiddenNodes));
 
 			// Delta1 = Delta1 + d2*a1^T
 			this.firstGradient = this.firstGradient.plus(secondError.times(input.transpose()));
 
 			// Delta2 = Delta2 + d3*a2^T
-			this.secondGradient = this.secondGradient.plus(thirdError.times(this.hiddenNodes.transpose()));			
+//			this.secondGradient = this.secondGradient.plus(thirdError.times(this.hiddenNodes.transpose()));
+			this.secondGradient = this.secondGradient.plus(thirdError.times(a2.transpose()));
 		}
+		
+//		this.firstGradient = this.firstGradient.times(1 / instances.size());
+//		this.secondGradient = this.secondGradient.times(1 / instances.size());
 	}
 
 	/**
@@ -254,16 +275,21 @@ public class NeuralNetwork extends Predictor
 	}
 
 	/**
-	 * Performs the sigmoid function on the values in the matrix.
+	 * Performs the sigmoid function on the values in the Matrix.
 	 * @param matrix The matrix to convert.
+	 * @return The new Matrix.
 	 */
-	public void sigmoid(Matrix matrix)
+	public Matrix sigmoid(Matrix matrix)
 	{
+		Matrix newMatrix = new Matrix(matrix.getRowDimension(), matrix.getColumnDimension());
+		
 		for (int i = 0; i < matrix.getRowDimension(); i++)
 		{
 			for (int j = 0; j < matrix.getColumnDimension(); j++)
-				matrix.set(i, j, this.sigmoid(matrix.get(i, j)));
+				newMatrix.set(i, j, this.sigmoid(matrix.get(i, j)));
 		}
+		
+		return newMatrix;
 	}
 
 	/**
@@ -295,8 +321,8 @@ public class NeuralNetwork extends Predictor
 		
 		// the +1 is to make room for the bias unit
 		for (Pair<Integer, Double> pair : instance.getFeatureVector())
-			matrix.set(pair.getKey() + 1, 0, pair.getValue());
-		matrix.set(0, 0, 1);
+			matrix.set(pair.getKey(), 0, pair.getValue());
+//		matrix.set(0, 0, 1);
 		
 		return matrix;
 	}

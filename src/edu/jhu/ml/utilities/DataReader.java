@@ -51,24 +51,28 @@ public class DataReader
 		while (scanner.hasNextLine())
 		{
 			String line = scanner.nextLine();
-			
-			Scanner lineScanner = new Scanner(line);
-			
-			char label = lineScanner.next().charAt(0);
-			FeatureVector featureVector = new FeatureVector();
-			
-			int index = 0;
-			while (lineScanner.hasNext())
-			{
-				int feature = lineScanner.nextInt();
-				if (feature != 0)
-					featureVector.add(index, feature);
-				index++;
-			}
-			
-			instances.add(new Instance(featureVector, new ClassificationLabel(label - 'a')));
+			instances.add(createInstance(line));
 		}
 		
 		return instances;
+	}
+	
+	public Instance createInstance(String line)
+	{
+		Scanner lineScanner = new Scanner(line);
+		
+		char label = lineScanner.next().charAt(0);
+		FeatureVector featureVector = new FeatureVector();
+		
+		int index = 0;
+		while (lineScanner.hasNext())
+		{
+			int feature = lineScanner.nextInt();
+			if (feature != 0)
+				featureVector.add(index, feature);
+			index++;
+		}
+		
+		return new Instance(featureVector, new ClassificationLabel(label - 'a'));
 	}
 }
