@@ -9,12 +9,28 @@ import java.util.Scanner;
 
 import edu.jhu.ml.data.label.ClassificationLabel;
 
+/**
+ * Takes a word and randomly selects handwritten letters to make up that word.
+ * 
+ * @author Daniel Deutsch
+ */
 public class RandomWordGenerator
 {
+	/**
+	 * The number of times a specific letter appears.
+	 */
 	private static int[] letterCounts;
 	
+	/**
+	 * The file path to the folder with the letter text files.
+	 */
 	private static final String filePath = "data/letters/";
 	
+	/**
+	 * Generates the random letters from the word.
+	 * @param word The word.
+	 * @return A list of Instances that represent the letters which make up that word.
+	 */
 	public static List<Instance> generateWord(String word) throws FileNotFoundException
 	{
 		if (RandomWordGenerator.letterCounts == null)
@@ -35,6 +51,12 @@ public class RandomWordGenerator
 		return instances;
 	}
 	
+	/**
+	 * Reads in a specific Instance of a letter.
+	 * @param letter The letter to read in.
+	 * @param index The specific Index.
+	 * @return The String at that line of the file.
+	 */
 	private static String readInstance(char letter, int index) throws FileNotFoundException
 	{
 		Scanner scanner = new Scanner(new FileReader(RandomWordGenerator.filePath + letter + ".txt"));
@@ -52,6 +74,11 @@ public class RandomWordGenerator
 		return null;
 	}
 	
+	/**
+	 * Creates an Instance from a String.
+	 * @param line The String.
+	 * @return The Instance.
+	 */
 	private static Instance createInstance(String line)
 	{
 		Scanner lineScanner = new Scanner(line);
@@ -71,6 +98,10 @@ public class RandomWordGenerator
 		return new Instance(featureVector, new ClassificationLabel(label - 'a'));
 	}
 	
+	/**
+	 * Counts how many times each letter appears and stores the counts in
+	 * a static array.
+	 */
 	private static void countNumberOfLetters() throws FileNotFoundException
 	{
 		RandomWordGenerator.letterCounts = new int[26];
@@ -88,6 +119,6 @@ public class RandomWordGenerator
 	
 	public static void main(String[] args) throws FileNotFoundException
 	{
-		List<Instance> instances = RandomWordGenerator.generateWord("hello");
+		// List<Instance> instances = RandomWordGenerator.generateWord("hello");
 	}
 }
