@@ -1,9 +1,11 @@
 package edu.jhu.ml.predictor;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
 import Jama.Matrix;
+import edu.jhu.ml.data.FeatureVector;
 import edu.jhu.ml.data.Instance;
 import edu.jhu.ml.data.Pair;
 import edu.jhu.ml.data.label.ClassificationLabel;
@@ -41,7 +43,7 @@ public class NeuralNetwork extends Predictor
 	 * The number of hidden nodes in the only hidden layer
 	 * of the neural network. Add 1 to account for the bias unit.
 	 */
-	private static final int HIDDEN_SIZE = 25;
+	private static final int HIDDEN_SIZE = 26; // 50
 
 	/**
 	 * The number of output nodes of the neural network.
@@ -80,7 +82,7 @@ public class NeuralNetwork extends Predictor
 		this.firstWeights = new Matrix(HIDDEN_SIZE, INPUT_SIZE);
 		this.secondWeights = new Matrix(OUTPUT_SIZE, HIDDEN_SIZE);
 
-		double epsilon = 0.025;
+		double epsilon = 0.05;
 		
 		// perform random initialization between -epsilon and epsilon
 		for (int i = 0; i < HIDDEN_SIZE; i++)
@@ -103,26 +105,35 @@ public class NeuralNetwork extends Predictor
 	public void train(List<Instance> instances)
 	{
 		int iterations = 33;
-		double learningRate = 0.5;
+		double learningRate = 1.001; // 1.001
 		
-		double lastCost = this.calculateCost(instances);
-		double thisCost = 0;
-
-		for (int i = 0; i < iterations; i++)
+		double lastCost = Double.MAX_VALUE;
+		double thisCost = this.calculateCost(instances);
+		double difference = thisCost - lastCost;
+		
+		int counter = 0;
+//		for (int i = 0; i < iterations; i++)
+		do
 		{
-			if (i == 13)
-				System.out.println("13");
-			System.out.println("Starting iteration " + i);
+			this.backPropagation(instances);
+		
 			thisCost = this.calculateCost(instances);
-			System.out.println("This cost: " + thisCost);
-			System.out.println("Cost difference: " + (thisCost - lastCost));
+			difference = thisCost - lastCost;
 			lastCost = thisCost;
 			
-			this.backPropagation(instances);
-						
-			this.firstWeights = this.firstWeights.minus(this.firstGradient.times(learningRate));
-			this.secondWeights = this.secondWeights.minus(this.secondGradient.times(learningRate));
-		}
+			System.out.println("iteration: " + counter++);
+			System.out.println("cost: " + lastCost);
+			System.out.println("difference: " + difference);
+			System.out.println("learing rate: " + learningRate);
+			System.out.println();
+			
+			
+			this.firstWeights = this.firstWeights.plus(this.firstGradient.times(learningRate));
+			this.secondWeights = this.secondWeights.plus(this.secondGradient.times(learningRate));
+			
+			learningRate = learningRate * 1.01; // 1.01
+			
+		} while (difference <= -10);
 	}
 
 	/**
@@ -227,7 +238,8 @@ public class NeuralNetwork extends Predictor
 			Matrix a3 = this.sigmoid(z3);
 			
 			// delta3 = a3 - y_i
-			Matrix delta3 = a3.minus(y);
+//			Matrix delta3 = a3.minus(y);
+			Matrix delta3 = y.minus(a3);
 			
 			// delta2 = Theta2^T * delta3 .* g(z2)
 			Matrix delta2 = this.secondWeights.transpose().times(delta3);
@@ -243,6 +255,7 @@ public class NeuralNetwork extends Predictor
 		this.firstGradient = new Matrix(HIDDEN_SIZE, INPUT_SIZE);
 		this.secondGradient = new Matrix(OUTPUT_SIZE, HIDDEN_SIZE);
 				
+		
 		// for some reason, the Matrix.times(double) method is not working!
 		// I think 1 / instances.size() is too small
 		// D1 = 1 / n * Delta1
@@ -259,7 +272,6 @@ public class NeuralNetwork extends Predictor
 				this.secondGradient.set(i, j, Delta2.get(i, j) / instances.size());
 		}
 		
-		System.out.println("done");
 		
 		
 		
@@ -394,7 +406,10 @@ public class NeuralNetwork extends Predictor
 		for (int i = 0; i < matrix.getRowDimension(); i++)
 		{
 			for (int j = 0; j < matrix.getColumnDimension(); j++)
-				output.set(i, j, matrix.get(i, j) * (1- matrix.get(i, j)));
+			{
+				double sigmoid = this.sigmoid(matrix.get(i, j));
+				output.set(i, j, sigmoid * (1 - sigmoid));
+			}
 		}
 
 		return output;
