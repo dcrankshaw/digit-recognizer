@@ -1,0 +1,13 @@
+So there are two cases, one where we have just an HMM (setting I) and
+one where we have an HMM acting on the results of the ANN (setting II).
+
+For an HMM, there are 3 types of parameters that need to be
+learned.
+
+The first is the transition probabilities:
+Ajk = P(zi+1 = k | zi = j)
+These are stored in a matrix, and I can learn
+these from my corpus dataset in both settings.
+
+The second is the emission probabilities:
+
