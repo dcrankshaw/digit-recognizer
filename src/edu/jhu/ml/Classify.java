@@ -16,7 +16,6 @@ import org.apache.commons.cli.OptionBuilder;
 
 import edu.jhu.ml.data.Instance;
 import edu.jhu.ml.evaluator.AccuracyEvaluator;
-import edu.jhu.ml.evaluator.Evaluator;
 import edu.jhu.ml.predictor.NeuralNetwork;
 import edu.jhu.ml.predictor.Predictor;
 import edu.jhu.ml.utilities.CommandLineUtilities;
@@ -47,6 +46,10 @@ public class Classify
 		String data = CommandLineUtilities.getOptionValue("data");
 		String model = CommandLineUtilities.getOptionValue("model");
 		
+		String testMethod = "letter_accuracy";
+		if (CommandLineUtilities.hasArg("test_method"))
+			testMethod = CommandLineUtilities.getOptionValue("test_method");
+		
 		DataReader reader = new DataReader(data);
 		List<Instance> instances = reader.read();
 		
@@ -66,11 +69,14 @@ public class Classify
 		{			
 			Predictor predictor = (Predictor) Classify.loadObject(model);
 			
-			Evaluator evaluator = null;
+			AccuracyEvaluator evaluator = null;
 			if (algorithm.equals("neural_network"))
-				evaluator = new AccuracyEvaluator();
+				evaluator = new AccuracyEvaluator(predictor);
 			
-			System.out.println(evaluator.evaluate(instances, predictor));
+			if (testMethod.equals("letter_accuracy") || testMethod.equals("all"))
+				System.out.println("Letter accuracy: " + evaluator.evaluateLetterAccuracy(instances, 1));
+			if (testMethod.equals("whole_word_accuracy") || testMethod.equals("all"))
+				System.out.println("Whole word accuracy: " + evaluator.evaluateWholeWordAccuracy(CommandLineUtilities.getOptionValue("word_file")));
 		}
 	}
 	
@@ -83,6 +89,8 @@ public class Classify
 		Classify.registerOption("data", "String", true, "The path to the data file.");
 		Classify.registerOption("algorithm", "String", true, "The algorithm to use.");
 		Classify.registerOption("model", "String", true, "The path to the model file.");
+		Classify.registerOption("test_method", "String", true, "The accuracy evaluation metric.");
+		Classify.registerOption("word_file", "String", true, "The file of words to test.");
 	}
 	
 	/**

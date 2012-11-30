@@ -1,11 +1,11 @@
 package edu.jhu.ml.predictor;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
 import Jama.Matrix;
-import edu.jhu.ml.data.FeatureVector;
 import edu.jhu.ml.data.Instance;
 import edu.jhu.ml.data.Pair;
 import edu.jhu.ml.data.label.ClassificationLabel;
@@ -37,13 +37,13 @@ public class NeuralNetwork extends Predictor
 	 * The number of nodes in the input layer of the neural network. Add
 	 * 1 to account for the bias unit.
 	 */
-	private static final int INPUT_SIZE = 128; // 128
+	private static final int INPUT_SIZE = 128 + 1; // 128
 
 	/**
 	 * The number of hidden nodes in the only hidden layer
 	 * of the neural network. Add 1 to account for the bias unit.
 	 */
-	private static final int HIDDEN_SIZE = 26; // 50
+	private static final int HIDDEN_SIZE = 50 + 1; // 50
 
 	/**
 	 * The number of output nodes of the neural network.
@@ -82,7 +82,7 @@ public class NeuralNetwork extends Predictor
 		this.firstWeights = new Matrix(HIDDEN_SIZE, INPUT_SIZE);
 		this.secondWeights = new Matrix(OUTPUT_SIZE, HIDDEN_SIZE);
 
-		double epsilon = 0.05;
+		double epsilon = 0.05; // 0.05
 		
 		// perform random initialization between -epsilon and epsilon
 		for (int i = 0; i < HIDDEN_SIZE; i++)
@@ -150,6 +150,7 @@ public class NeuralNetwork extends Predictor
 		{
 			// a1 = x_i
 			Matrix a1 = this.convertInstanceToMatrix(instance);
+			a1 = this.addBiasUnit(a1);
 			
 			// y = label
 			Matrix y = this.convertLabelToMatrix((ClassificationLabel) instance.getLabel());
@@ -159,6 +160,7 @@ public class NeuralNetwork extends Predictor
 			
 			// a2 = g(z2)
 			Matrix a2 = this.sigmoid(z2);
+			a2 = this.addBiasUnit(a2);
 			
 			// z3 = Theta2 * a2
 			Matrix z3 = this.secondWeights.times(a2);
@@ -185,22 +187,30 @@ public class NeuralNetwork extends Predictor
 	 */
 	private double[] forwardPropagation(Instance instance)
 	{
-		// X
-		Matrix input = this.convertInstanceToMatrix(instance);
+		// a1 = x_i
+		Matrix a1 = this.convertInstanceToMatrix(instance);
+		a1 = this.addBiasUnit(a1);
 		
-		// z2 = Theta1 * X
-		this.hiddenNodes = this.firstWeights.times(input);
-
-		// z3 = Theta2 * g(z2)
-		Matrix output = this.secondWeights.times(this.sigmoid(this.hiddenNodes));
+		// y = label
+		Matrix y = this.convertLabelToMatrix((ClassificationLabel) instance.getLabel());
+		
+		// z2 = Theta1 * a1
+		Matrix z2 = this.firstWeights.times(a1);
+		
+		// a2 = g(z2)
+		Matrix a2 = this.sigmoid(z2);
+		a2 = this.addBiasUnit(a2);
+		
+		// z3 = Theta2 * a2
+		Matrix z3 = this.secondWeights.times(a2);
 		
 		// a3 = g(z3)
-		Matrix sigmoidOutput = this.sigmoid(output);
+		Matrix a3 = this.sigmoid(z3);
 
-		double[] array = new double[OUTPUT_SIZE];
-		for (int i = 0; i < OUTPUT_SIZE; i++)
-			array[i] = sigmoidOutput.get(i, 0);
-
+		double[] array = new double[a3.getRowDimension()];
+		for (int i = 0; i < array.length; i++)
+			array[i] = a3.get(i, 0);
+		
 		return array;
 	}
 
@@ -221,6 +231,7 @@ public class NeuralNetwork extends Predictor
 		{
 			// a1 = x_i
 			Matrix a1 = this.convertInstanceToMatrix(instances.get(i));
+			a1 = this.addBiasUnit(a1);
 			
 			// y = label
 			Matrix y = this.convertLabelToMatrix((ClassificationLabel) instances.get(i).getLabel());
@@ -230,6 +241,7 @@ public class NeuralNetwork extends Predictor
 			
 			// a2 = g(z2)
 			Matrix a2 = this.sigmoid(z2);
+			a2 = this.addBiasUnit(a2);
 			
 			// z3 = Theta2 * a2
 			Matrix z3 = this.secondWeights.times(a2);
@@ -237,8 +249,7 @@ public class NeuralNetwork extends Predictor
 			// a3 = g(z3)
 			Matrix a3 = this.sigmoid(z3);
 			
-			// delta3 = a3 - y_i
-//			Matrix delta3 = a3.minus(y);
+			// delta3 = y_i - a3
 			Matrix delta3 = y.minus(a3);
 			
 			// delta2 = Theta2^T * delta3 .* g(z2)
@@ -271,55 +282,6 @@ public class NeuralNetwork extends Predictor
 			for (int j = 0; j < HIDDEN_SIZE; j++)
 				this.secondGradient.set(i, j, Delta2.get(i, j) / instances.size());
 		}
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-//		this.firstGradient = Delta1;
-//		this.secondGradient = Delta2;
-//		// Delta1
-//		this.firstGradient = new Matrix(new double[HIDDEN_SIZE][INPUT_SIZE]);
-//
-//		// Delta2
-//		this.secondGradient = new Matrix(new double[OUTPUT_SIZE][HIDDEN_SIZE]);
-//
-//		for (Instance instance : instances)
-//		{
-//			// a1 = x
-//			Matrix input = this.convertInstanceToMatrix(instance);
-//
-//			// a2
-//			// this.hiddenNodes
-//			Matrix a2 = this.sigmoidGradient(this.hiddenNodes);
-//
-//			// a3 = output
-//			Matrix prediction = this.convertArrayToMatrix(this.forwardPropagation(instance));
-//
-//			// y = real labels
-//			Matrix actualLabel = this.convertLabelToMatrix((ClassificationLabel) instance.getLabel());
-//
-//			// d3 = output - real labels
-//			Matrix thirdError = prediction.minus(actualLabel);
-//
-//			// d2 = theta_2^T * d3 .* g'(z2)
-//			Matrix secondError = this.elementWiseMultiplication(this.secondWeights.transpose().times(thirdError), this.sigmoidGradient(this.hiddenNodes));
-//
-//			// Delta1 = Delta1 + d2*a1^T
-//			this.firstGradient = this.firstGradient.plus(secondError.times(input.transpose()));
-//
-//			// Delta2 = Delta2 + d3*a2^T
-////			this.secondGradient = this.secondGradient.plus(thirdError.times(this.hiddenNodes.transpose()));
-//			this.secondGradient = this.secondGradient.plus(thirdError.times(a2.transpose()));
-//		}
-//		
-////		this.firstGradient = this.firstGradient.times(1 / instances.size());
-////		this.secondGradient = this.secondGradient.times(1 / instances.size());
 	}
 
 	/**
@@ -343,6 +305,23 @@ public class NeuralNetwork extends Predictor
 		}
 
 		return matrix;
+	}
+	
+	/**
+	 * Adds the bias +1 unit at the 0th index of the matrix. Should only be used for
+	 * column vectors.
+	 * @param matrix The Matrix.
+	 * @return The new Matrix.
+	 */
+	private Matrix addBiasUnit(Matrix matrix)
+	{
+		Matrix output = new Matrix(matrix.getRowDimension(), 1);
+		
+		for (int i = 0; i < matrix.getRowDimension() - 1; i++)
+			output.set(i + 1, 0, matrix.get(i, 0));
+		output.set(0, 0, 1);
+		
+		return output;
 	}
 
 	/**
@@ -424,10 +403,8 @@ public class NeuralNetwork extends Predictor
 	{
 		Matrix matrix = new Matrix(INPUT_SIZE, 1);
 		
-		// the +1 is to make room for the bias unit
 		for (Pair<Integer, Double> pair : instance.getFeatureVector())
 			matrix.set(pair.getKey(), 0, pair.getValue());
-//		matrix.set(0, 0, 1);
 		
 		return matrix;
 	}
@@ -447,7 +424,7 @@ public class NeuralNetwork extends Predictor
 	 * @param instance The Instance to classify.
 	 * @return The most probable label.
 	 */
-	public Label predict(Instance instance)
+	public ClassificationLabel predict(Instance instance)
 	{
 		double[] probabilities = this.predictProbabilities(instance);
 
@@ -474,6 +451,22 @@ public class NeuralNetwork extends Predictor
 	public double[] predictProbabilities(Instance instance)
 	{
 		return this.forwardPropagation(instance);
+	}
+	
+	public int[] getTopProbabilities(Instance instance, int number)
+	{
+		double[] prediction = this.forwardPropagation(instance);
+		ArrayList<Pair<Double, Integer>> list = new ArrayList<Pair<Double, Integer>>();
+		
+		for (int i = 0; i < prediction.length; i++)
+			list.add(new Pair<Double,Integer>(prediction[i], i));
+		Collections.sort(list);
+		
+		int[] result = new int[number];
+		for (int i = 0; i < number; i++)
+			result[i] = list.get(list.size() - 1 - i).getValue();
+		
+		return result;
 	}
 
 }

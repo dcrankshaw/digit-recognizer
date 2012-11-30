@@ -1,10 +1,15 @@
 package edu.jhu.ml.evaluator;
 
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Scanner;
 
 import edu.jhu.ml.data.Instance;
+import edu.jhu.ml.data.RandomWordGenerator;
+import edu.jhu.ml.data.label.ClassificationLabel;
 import edu.jhu.ml.data.label.Label;
 import edu.jhu.ml.predictor.Predictor;
 
@@ -15,18 +20,33 @@ import edu.jhu.ml.predictor.Predictor;
  * 
  * @author Daniel Deutsch
  */
-public class AccuracyEvaluator extends Evaluator
+public class AccuracyEvaluator
 {
+	/**
+	 * The predictor.
+	 */
+	private Predictor predictor;
+	
+	/**
+	 * The constructor.
+	 * @param p The predictor to use.
+	 */
+	public AccuracyEvaluator(Predictor p)
+	{
+		this.predictor = p;
+	}
+	
 	/**
 	 * Evaluates the predictor on the given set of data and outputs the accuracies on
 	 * each <code>Label</code> as well as the overall accuracy for the data.
 	 * 
 	 * @param instances The data to classify.
 	 * @param predictor The predictor to evaluate.
+	 * @param number The top number that the true answer has to be in.
 	 * 
 	 * @return The decimal representing the accuracy of the predictor.
 	 */
-	public double evaluate(List<Instance> instances, Predictor predictor)
+	public double evaluateLetterAccuracy(List<Instance> instances, int number)
 	{
 		ArrayList<Label> labels = new ArrayList<Label>(); 
 		HashMap<Label, Integer> correctCounters = new HashMap<Label, Integer>();
@@ -43,7 +63,8 @@ public class AccuracyEvaluator extends Evaluator
 					correctCounters.put(label, 0);
 					totalCounters.put(label, 0);
 				}
-				if (label.equals(predictor.predict(instance)))
+				
+				if (this.inTopAmount(instance, number))
 					correctCounters.put(label, correctCounters.get(label) + 1);
 				
 				int value = totalCounters.get(label) + 1; 
@@ -71,5 +92,70 @@ public class AccuracyEvaluator extends Evaluator
 
 		return result;
 	}
+	
+	/**
+	 * Checks to see if the predictor got the Instance right in the top number, 
+	 * like the top 5.
+	 * @param instance The Instance.
+	 * @param number The top number to check.
+	 * @return True if it did, false otherwise.
+	 */
+	public boolean inTopAmount(Instance instance, int number)
+	{
+		int[] prediction = predictor.getTopProbabilities(instance, number);
+		
+		for (int i = 0; i < number; i++)
+		{
+			if (((ClassificationLabel) instance.getLabel()).getLabel() == prediction[i])
+				return true;
+		}
+		
+		return false;
+	}
 
+	
+	/**
+	 * Evaluates how many words the predictor gets completely correct. It will randomly
+	 * generate the data from the word file.
+	 * @param wordFile The file with the list of words.
+	 * @return The number of words it gets completely correct over the total number of words.
+	 */
+	public double evaluateWholeWordAccuracy(String wordFile)
+	{
+		int total = 0;
+		int correct = 0;
+		
+		try
+		{
+			Scanner scanner = new Scanner(new FileReader(wordFile));
+			while (scanner.hasNextLine())
+			{
+				List<Instance> word = RandomWordGenerator.generateWord(scanner.nextLine());
+				if (this.testWord(word))
+					correct++;
+				total++;
+			}
+		}
+		catch (FileNotFoundException e)
+		{
+			e.printStackTrace();
+		}
+		
+		return (double) correct / total;
+	}
+	
+	/**
+	 * Tests to see if the whole word was done correctly.
+	 * @param word The word.
+	 * @return True if it was, false otherwise.
+	 */
+	private boolean testWord(List<Instance> word)
+	{
+		for (Instance letter : word)
+		{
+			if (!this.inTopAmount(letter, 1))
+				return false;
+		}
+		return true;
+	}
 }
