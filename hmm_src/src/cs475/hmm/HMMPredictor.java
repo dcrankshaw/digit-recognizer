@@ -144,7 +144,7 @@ public class HMMPredictor {
                     double Aij = transmissionProbabilities.get(bigram);
                     // The probability of observing observedCharacter[position]
                     // if the real letter is curChar
-                    double Bjyi = emissions.getProbability(current, observedCharacters.get(position));
+                    double Bjyi = emissions.getProbability(observedCharacters.get(position), current);
                     // We add because these are log probabilities
                     double prob = maxProbs[prevChar][position - 1] + Aij + Bjyi;
                     if (prob > maxProb) {
