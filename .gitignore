@@ -2,5 +2,8 @@
 *.aux
 *.out
 *.log
+*.classpath
+*.settings
+*.project
 
 *.pdf
