@@ -7,6 +7,7 @@ public class HMMPredictor {
 
     // TODO Error handling for the case that we never see a bigram
     // in training, but we do in prediction
+    // NOTE: Probabilities are all log probabilities
     private HashMap<String, Double> transmissionProbabilities;
     private HashMap<Character, Double> firstLetterProbabilities;
     private EmissionProbabilities emissions;
@@ -33,6 +34,7 @@ public class HMMPredictor {
             Label z = instance.getLabel();
             emissions.addObservation(x, z);
         }
+        // TODO make sure these are log probs
         emissions.calculateProbabilities();
     }
 
@@ -40,6 +42,9 @@ public class HMMPredictor {
     private void learnTransitionProbabilities(File corpus) {
         BufferedReader reader = new BufferedReader(new FileReader(corpus));
         double wordCount = 0;
+        double bigramCount = 0;
+        HashMap<String, Double> bigramCounts = new HashMap<String, Double>();
+        HashMap<Character, Double> firstLetterCounts = new HashMap<Character, Double>();
         try {
             boolean done = false;
             while (!done) {
@@ -49,7 +54,7 @@ public class HMMPredictor {
                 } else {
                     String[] words = line.split(" ");
                     for (int i = 0; i < words.length; ++i) {
-                        updateTransmissionProbabilities(words[i]);
+                        bigramCount += updateTransmissionProbabilities(words[i], bigramCounts, firstLetterCounts);
                         ++wordCount;
                     }
 
@@ -64,24 +69,38 @@ public class HMMPredictor {
         }
 
         //TODO Make sure to divide probs by wordCount
+        for (String bigram : bigramCounts.keySet()) {
+            Double count = transmissionProbabilities.get(bigram);
+            Double prob = Math.log(count / bigramCount);
+            transmissionProbabilities.put(bigram, prob);
+        }
+        for (Character c : firstLetterCounts) {
+            Double count = firstLetterCounts.get(c);
+            Double prob = Math.log(count / wordCount);
+            firstLetterProbabilities.put(c, prob);
+        }
 
     }
 
-    private void updateTransmissionProbabilities(String word) {
+    // returns the number of bigrams in the word
+    private double updateTransmissionProbabilities(String word, HashMap<String, Double> bigramCounts, HashMap<Character, Double> firstLetterCounts) {
         word = word.trim();
-        Double firstLetterCount = firstLetterProbabilities.get(word.charAt(0));
+        double bigramCount = 0;
+        Double firstLetterCount = firstLetterCounts.get(word.charAt(0));
         if (firstLetterCount == null) {
             firstLetterCount = new Double(0);
         }
-        firstLetterProbabilities.put(word.charAt(0), firstLetterCount + 1);
+        firstLetterCounts.put(word.charAt(0), firstLetterCount + 1);
         for (int i = 0; i < word.length() - 1; ++i) {
             String bigram = word.substring(i, i + 2);
-            Double prob = transmissionProbabilities.get(bigram);
+            Double prob = bigramCounts.get(bigram);
             if (prob == null) {
-                firstLetterCount = new Double(0);
+                prob = new Double(0);
             }
-            transmissionProbabilities.put(bigram, prob + 1);
+            bigramCounts.put(bigram, prob + 1);
+            ++bigramCount;
         }
+        return bigramCount;
     }
 
     public void train(List<Instance> letterInstances) {
@@ -126,7 +145,8 @@ public class HMMPredictor {
                     // The probability of observing observedCharacter[position]
                     // if the real letter is curChar
                     double Bjyi = emissions.getProbability(current, observedCharacters.get(position));
-                    double prob = maxProbs[prevChar][position - 1] * Aij * Bjyi;
+                    // We add because these are log probabilities
+                    double prob = maxProbs[prevChar][position - 1] + Aij + Bjyi;
                     if (prob > maxProb) {
                         maxProb = prob;
                         maxProbPrevChar = prevChar;
