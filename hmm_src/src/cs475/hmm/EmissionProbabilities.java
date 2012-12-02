@@ -2,24 +2,38 @@ package cs475.hmm;
 
 public class EmissionProbabilities {
 
+    private HashMap<LatentObservedPair, Integer> emissionCounts;
     private HashMap<LatentObservedPair, Double> emissionProbs;
+    private double totalPairs;
 
     public EmissionProbabilities() {
+        emissionCounts = new HashMap<LatentObservedPair, Integer>();
         emissionProbs = new HashMap<LatentObservedPair, Double>();
-    
+        totalPairs = 0;
     }
 
     public void addObservation(char observed, char actual){
-    
+        LatentObservedPair pair = new LatentObservedPair(observed, actual);
+        Double prob = emissionCounts.get(pair);
+        if (prob == null) {
+            prob = new Double(0);
+        }
+        emissionCounts.put(pair, prob + 1);
+        totalPairs += 1;
     }
 
     // Really these are log probabilities
     public void calculateProbabilities() {
-    
+        emissionProbs.clear();
+        for (LatentObservedPair pair : emissionCounts.keySet()) {
+            Double count = (Double) emissionCounts.get(pair);
+            Double logProb = Math.log(count / totalPairs);
+            emissionProbs.put(pair, logProb);
+        }
     }
 
     public Double getProbability(char observed, char actual) {
-    
+        return emissionProbs.get(new LatentObservedPair(observed, actual));
     }
 
     private final class LatentObservedPair {
