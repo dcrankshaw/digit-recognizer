@@ -130,7 +130,7 @@ public class AccuracyEvaluator
 			Scanner scanner = new Scanner(new FileReader(wordFile));
 			while (scanner.hasNextLine())
 			{
-				List<Instance> word = RandomWordGenerator.generateWord(scanner.nextLine());
+				List<Instance> word = RandomWordGenerator.randomWord();
 				if (this.testWord(word))
 					correct++;
 				total++;

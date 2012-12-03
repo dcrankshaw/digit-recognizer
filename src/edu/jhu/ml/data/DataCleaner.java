@@ -22,11 +22,11 @@ public class DataCleaner
 	 * Cleans up the raw data and turns it into a set of 
 	 * @param fileName
 	 */
-	public static void cleanUp(String fileName) throws IOException
+	public static void cleanUp(String fileName, double trainPercent) throws IOException
 	{				
 		List<List<String>> characterList = DataCleaner.createCharacterList(fileName);
-		DataCleaner.divideIntoThirds(characterList);
-		DataCleaner.divideByLetter(characterList);
+		DataCleaner.divideIntoGroups(characterList, trainPercent);
+		DataCleaner.divideByLetter(characterList, trainPercent);
 	}
 	
 	/**
@@ -73,7 +73,7 @@ public class DataCleaner
 	 * @param characterList
 	 * @throws IOException 
 	 */
-	private static void divideIntoThirds(List<List<String>> characterList) throws IOException
+	private static void divideIntoGroups(List<List<String>> characterList, double trainPercent) throws IOException
 	{
 		FileWriter nnTrain = new FileWriter("data/all/nnTrain.txt");
 		FileWriter hmmTrain = new FileWriter("data/all/hmmTrain.txt");
@@ -83,9 +83,9 @@ public class DataCleaner
 		{
 			int counter = 0;
 			
-			for (int i = 0; i < list.size() / 3; i++)
+			for (int i = 0; i < list.size() * trainPercent; i++)
 				nnTrain.write(list.get(counter++) + "\n");
-			for (int i = 0; i < list.size() / 3; i++)
+			for (int i = 0; i < list.size() * trainPercent; i++)
 				hmmTrain.write(list.get(counter++) + "\n");
 			for ( ; counter < list.size(); counter++)
 				test.write(list.get(counter) + "\n");
@@ -100,7 +100,7 @@ public class DataCleaner
 	 * Divides the data up into a text file per character.
 	 * @param characterList The lists of input.
 	 */
-	private static void divideByLetter(List<List<String>> characterList) throws IOException
+	private static void divideByLetter(List<List<String>> characterList, double trainPercent) throws IOException
 	{
 		for (int i = 0; i < 26; i++)
 		{
@@ -108,9 +108,11 @@ public class DataCleaner
 			FileWriter writer = new FileWriter("data/letters/" + letter + ".txt");
 			
 			List<String> list = characterList.get(i);
-			for (String string : list)
-				writer.write(string + "\n");
-			
+		
+			// trainPercent * 2 to get to the test data
+			for (int j = (int) (list.size() * trainPercent * 2); j < list.size(); j++)
+				writer.write(list.get(j) + "\n");
+
 			writer.close();
 		}
 	}
@@ -122,6 +124,6 @@ public class DataCleaner
 	 */
 	public static void main(String[] args) throws IOException
 	{
-		DataCleaner.cleanUp("data/raw/data.txt");
+		DataCleaner.cleanUp("data/raw/data.txt", 0);
 	}
 }
