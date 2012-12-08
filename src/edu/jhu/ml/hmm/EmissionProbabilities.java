@@ -1,4 +1,6 @@
-package cs475.hmm;
+package edu.jhu.ml.hmm;
+
+import java.util.*;
 
 public class EmissionProbabilities {
 
@@ -11,6 +13,8 @@ public class EmissionProbabilities {
         emissionProbs = new HashMap<LatentObservedPair, Double>();
         totalPairs = 0;
     }
+
+    public double getTotalPairs() { return totalPairs; }
 
     public void addObservation(char observed, char actual){
         LatentObservedPair pair = new LatentObservedPair(observed, actual);

@@ -38,7 +38,7 @@ public class HMMPredictor {
         emissions.calculateProbabilities();
     }
 
-    // TODO For now we use no smoothing
+    // TODO Add smoothing
     private void learnTransitionProbabilities(File corpus) {
         BufferedReader reader = new BufferedReader(new FileReader(corpus));
         double wordCount = 0;

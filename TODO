@@ -1,0 +1,12 @@
+Crankshaw:
+    Write the code to output the metric
+    Break up the hmm corpus into train and test
+    Bucket the length of the words 
+
+
+-ann_training_data
+-hmm_letter_training_data
+-train_corpus
+-test_corpus
+-test_letter_batches // this is a directory and we assume that the files are named a.txt, b.txt, etc.
+-output_directory // output 3 files corresponding to the 3 word size buckets - words shorter than 4 letter, shorter than 8 letters, and the rest
