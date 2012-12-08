@@ -9,7 +9,8 @@ import Jama.Matrix;
 import edu.jhu.ml.data.Instance;
 import edu.jhu.ml.data.Pair;
 import edu.jhu.ml.data.label.ClassificationLabel;
-import edu.jhu.ml.data.label.Label;
+import edu.jhu.ml.evaluator.AccuracyEvaluator;
+import edu.jhu.ml.utilities.DataReader;
 
 /**
  * The implementation of an artificial neural network which will be used
@@ -43,8 +44,10 @@ public class NeuralNetwork extends Predictor
 	 * The number of hidden nodes in the only hidden layer
 	 * of the neural network. Add 1 to account for the bias unit.
 	 */
-	private static final int HIDDEN_SIZE = 50 + 1; // 50
+	private static int HIDDEN_SIZE_1 = 100 + 1; // 50
 
+	private static int HIDDEN_SIZE_2 = 50 + 1;
+	
 	/**
 	 * The number of output nodes of the neural network.
 	 */
@@ -60,10 +63,7 @@ public class NeuralNetwork extends Predictor
 	 */
 	private Matrix secondWeights;
 
-	/**
-	 * The column vector which represents the values of the hidden nodes.
-	 */
-	private Matrix hiddenNodes;
+	private Matrix thirdWeights;
 
 	/**
 	 * Corresponds to Delta1. Position (i,j) contains the gradient of parameter (i,j).
@@ -74,27 +74,40 @@ public class NeuralNetwork extends Predictor
 	 * Corresponds to Delta2. Position (i,j) contains the gradient of parameter (i,j).
 	 */
 	private Matrix secondGradient;
+	
+	private Matrix thirdGradient;
 
-	public NeuralNetwork()
+	public NeuralNetwork(int size1, int size2)
 	{
-		Random random = new Random(4);
+		NeuralNetwork.HIDDEN_SIZE_1 = size1;
+		NeuralNetwork.HIDDEN_SIZE_2 = size2;
+		
+		
+		Random random = new Random();
 
-		this.firstWeights = new Matrix(HIDDEN_SIZE, INPUT_SIZE);
-		this.secondWeights = new Matrix(OUTPUT_SIZE, HIDDEN_SIZE);
+		this.firstWeights = new Matrix(HIDDEN_SIZE_1, INPUT_SIZE);
+		this.secondWeights = new Matrix(HIDDEN_SIZE_2, HIDDEN_SIZE_1);
+		this.thirdWeights = new Matrix(OUTPUT_SIZE, HIDDEN_SIZE_2);
 
-		double epsilon = 0.05; // 0.05
+		double epsilon = 0.25; // 0.05
 		
 		// perform random initialization between -epsilon and epsilon
-		for (int i = 0; i < HIDDEN_SIZE; i++)
+		for (int i = 0; i < HIDDEN_SIZE_1; i++)
 		{	
 			for (int j = 0; j < INPUT_SIZE; j++)
 				this.firstWeights.set(i, j, random.nextDouble() * 2 * epsilon - epsilon);
 		}
+		
+		for (int i = 0; i < HIDDEN_SIZE_2; i++)
+		{
+			for (int j = 0; j < HIDDEN_SIZE_1; j++)
+				this.secondWeights.set(i, j, random.nextDouble() * 2 * epsilon - epsilon);
+		}
 
 		for (int i = 0; i < OUTPUT_SIZE; i++)
 		{
-			for (int j = 0; j < HIDDEN_SIZE; j++)
-				this.secondWeights.set(i, j, random.nextDouble() * 2 * epsilon - epsilon);
+			for (int j = 0; j < HIDDEN_SIZE_2; j++)
+				this.thirdWeights.set(i, j, random.nextDouble() * 2 * epsilon - epsilon);
 		}
 	}
 
@@ -104,7 +117,6 @@ public class NeuralNetwork extends Predictor
 	 */
 	public void train(List<Instance> instances)
 	{
-		int iterations = 33;
 		double learningRate = 1.001; // 1.001
 		
 		double lastCost = Double.MAX_VALUE;
@@ -112,7 +124,6 @@ public class NeuralNetwork extends Predictor
 		double difference = thisCost - lastCost;
 		
 		int counter = 0;
-//		for (int i = 0; i < iterations; i++)
 		do
 		{
 			this.backPropagation(instances);
@@ -130,10 +141,12 @@ public class NeuralNetwork extends Predictor
 			
 			this.firstWeights = this.firstWeights.plus(this.firstGradient.times(learningRate));
 			this.secondWeights = this.secondWeights.plus(this.secondGradient.times(learningRate));
+			this.thirdWeights = this.thirdWeights.plus(this.thirdGradient.times(learningRate));
 			
 			learningRate = learningRate * 1.01; // 1.01
 			
 		} while (difference <= -10);
+//		} while (true);
 	}
 
 	/**
@@ -167,13 +180,20 @@ public class NeuralNetwork extends Predictor
 			
 			// a3 = g(z3)
 			Matrix a3 = this.sigmoid(z3);
+			a3 = this.addBiasUnit(a3);
+			
+			// z4 = Theta3 * a3
+			Matrix z4 = this.thirdWeights.times(a3);
+			
+			// a4 = g(z4)
+			Matrix a4 = this.sigmoid(z4);
 			
 			for (int k = 0; k < OUTPUT_SIZE; k++)
 			{
 				if (y.get(k, 0) == 1)
-					cost += Math.log(a3.get(k, 0));
+					cost += Math.log(a4.get(k, 0));
 				else
-					cost += Math.log(1 - a3.get(k, 0));
+					cost += Math.log(1 - a4.get(k, 0));
 			}
 		}
 		
@@ -191,9 +211,6 @@ public class NeuralNetwork extends Predictor
 		Matrix a1 = this.convertInstanceToMatrix(instance);
 		a1 = this.addBiasUnit(a1);
 		
-		// y = label
-		Matrix y = this.convertLabelToMatrix((ClassificationLabel) instance.getLabel());
-		
 		// z2 = Theta1 * a1
 		Matrix z2 = this.firstWeights.times(a1);
 		
@@ -206,10 +223,17 @@ public class NeuralNetwork extends Predictor
 		
 		// a3 = g(z3)
 		Matrix a3 = this.sigmoid(z3);
+		a3 = this.addBiasUnit(a3);
+		
+		// z4 = Theta3 * a3
+		Matrix z4 = this.thirdWeights.times(a3);
+		
+		// a4 = g(z4)
+		Matrix a4 = this.sigmoid(z4);
 
-		double[] array = new double[a3.getRowDimension()];
+		double[] array = new double[a4.getRowDimension()];
 		for (int i = 0; i < array.length; i++)
-			array[i] = a3.get(i, 0);
+			array[i] = a4.get(i, 0);
 		
 		return array;
 	}
@@ -221,10 +245,13 @@ public class NeuralNetwork extends Predictor
 	private void backPropagation(List<Instance> instances)
 	{
 		// Delta1 = 0
-		Matrix Delta1 = new Matrix(HIDDEN_SIZE, INPUT_SIZE); 
+		Matrix Delta1 = new Matrix(HIDDEN_SIZE_1, INPUT_SIZE); 
 		
 		// Delta2 = 0
-		Matrix Delta2 = new Matrix(OUTPUT_SIZE, HIDDEN_SIZE);
+		Matrix Delta2 = new Matrix(HIDDEN_SIZE_2, HIDDEN_SIZE_1);
+		
+		// Delta3 = 0
+		Matrix Delta3 = new Matrix(OUTPUT_SIZE, HIDDEN_SIZE_2);
 		
 		// for i = 1 to m
 		for (int i = 0; i < instances.size(); i++)
@@ -248,11 +275,22 @@ public class NeuralNetwork extends Predictor
 			
 			// a3 = g(z3)
 			Matrix a3 = this.sigmoid(z3);
+			a3 = this.addBiasUnit(a3);
 			
-			// delta3 = y_i - a3
-			Matrix delta3 = y.minus(a3);
+			// z4 = Theta3 * a3
+			Matrix z4 = this.thirdWeights.times(a3);
 			
-			// delta2 = Theta2^T * delta3 .* g(z2)
+			// a4 = g(z4)
+			Matrix a4 = this.sigmoid(z4);
+			
+			// delta4 = y_i - a4
+			Matrix delta4 = y.minus(a4);
+			
+			// delta3 = Theta3^T * delta4 .* g'(z3)
+			Matrix delta3 = this.thirdWeights.transpose().times(delta4);
+			delta3 = this.elementWiseMultiplication(delta3, this.sigmoidGradient(z3));
+			
+			// delta2 = Theta2^T * delta3 .* g'(z2)
 			Matrix delta2 = this.secondWeights.transpose().times(delta3);
 			delta2 = this.elementWiseMultiplication(delta2, this.sigmoidGradient(z2));
 		
@@ -261,26 +299,36 @@ public class NeuralNetwork extends Predictor
 			
 			// Delta2 = Delta2 + delta3 * a2^T
 			Delta2 = Delta2.plus(delta3.times(a2.transpose()));
+			
+			// Delta3 = Delta3 + delta4 * a3^T
+			Delta3 = Delta3.plus(delta4.times(a3.transpose()));
 		}
 		
-		this.firstGradient = new Matrix(HIDDEN_SIZE, INPUT_SIZE);
-		this.secondGradient = new Matrix(OUTPUT_SIZE, HIDDEN_SIZE);
+		this.firstGradient = new Matrix(HIDDEN_SIZE_1, INPUT_SIZE);
+		this.secondGradient = new Matrix(HIDDEN_SIZE_2, HIDDEN_SIZE_1);
+		this.thirdGradient = new Matrix(OUTPUT_SIZE, HIDDEN_SIZE_2);
 				
-		
 		// for some reason, the Matrix.times(double) method is not working!
 		// I think 1 / instances.size() is too small
 		// D1 = 1 / n * Delta1
-		for (int i = 0; i < HIDDEN_SIZE; i++)
+		for (int i = 0; i < HIDDEN_SIZE_1; i++)
 		{
 			for (int j = 0; j < INPUT_SIZE; j++)
 				this.firstGradient.set(i, j, Delta1.get(i, j) / instances.size());
 		}
 		
 		// D2 = 1 / n * Delta2
+		for (int i = 0; i < HIDDEN_SIZE_2; i++)
+		{
+			for (int j = 0; j < HIDDEN_SIZE_1; j++)
+				this.secondGradient.set(i, j, Delta2.get(i, j) / instances.size());
+		}
+		
+		// D3 = 1 / n * Delta3
 		for (int i = 0; i < OUTPUT_SIZE; i++)
 		{
-			for (int j = 0; j < HIDDEN_SIZE; j++)
-				this.secondGradient.set(i, j, Delta2.get(i, j) / instances.size());
+			for (int j = 0; j < HIDDEN_SIZE_2; j++)
+				this.thirdGradient.set(i, j, Delta3.get(i, j) / instances.size());
 		}
 	}
 
@@ -441,17 +489,6 @@ public class NeuralNetwork extends Predictor
 
 		return new ClassificationLabel(label);
 	}
-
-	/**
-	 * Gets the likelihood that an Instance is a specific letter.
-	 * @param instance The Instance to classify.
-	 * @return An array of likelihoods where the 0th index corresponds
-	 * to the letter 'a'.
-	 */
-	public double[] predictProbabilities(Instance instance)
-	{
-		return this.forwardPropagation(instance);
-	}
 	
 	public int[] getTopProbabilities(Instance instance, int number)
 	{
@@ -467,6 +504,38 @@ public class NeuralNetwork extends Predictor
 			result[i] = list.get(list.size() - 1 - i).getValue();
 		
 		return result;
+	}
+
+	
+
+	/**
+	 * Gets the likelihood that an Instance is a specific letter.
+	 * @param instance The Instance to classify.
+	 * @return An array of likelihoods where the 0th index corresponds
+	 * to the letter 'a'.
+	 */
+	public double[] predictProbabilities(Instance instance)
+	{
+		return this.forwardPropagation(instance);
+	}
+	
+	
+	public static void main(String[] args)
+	{
+		DataReader reader = new DataReader("data/all/nnTrain.txt");
+		List<Instance> instances = reader.read();
+		
+		System.out.println("100, 50");
+		for (int i = 0; i < 10; i++)
+		{
+			NeuralNetwork network = new NeuralNetwork(100, 50);
+			AccuracyEvaluator evaluator = new AccuracyEvaluator(network);
+			
+			network.train(instances);
+			System.out.println(evaluator.evaluateLetterAccuracy(instances, 1));
+		}
+		
+		
 	}
 
 }

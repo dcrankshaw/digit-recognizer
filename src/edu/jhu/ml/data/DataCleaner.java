@@ -124,6 +124,6 @@ public class DataCleaner
 	 */
 	public static void main(String[] args) throws IOException
 	{
-		DataCleaner.cleanUp("data/raw/data.txt", 0);
+		DataCleaner.cleanUp("data/raw/data.txt", .33);
 	}
 }

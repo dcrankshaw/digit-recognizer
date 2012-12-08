@@ -60,7 +60,7 @@ public class Classify
 			Predictor predictor = null;
 			
 			if (algorithm.equals("neural_network"))
-				predictor = new NeuralNetwork();
+				predictor = new NeuralNetwork(50, 50);
 			
 			predictor.train(instances);
 			Classify.saveObject(predictor, model);
