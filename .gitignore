@@ -3,4 +3,8 @@
 *.out
 *.log
 
+*.classpath
+*.project
+*.DS_Store
+
 *.pdf
