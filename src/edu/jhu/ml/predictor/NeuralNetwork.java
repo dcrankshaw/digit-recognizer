@@ -10,7 +10,9 @@ import edu.jhu.ml.data.Instance;
 import edu.jhu.ml.data.Pair;
 import edu.jhu.ml.data.label.ClassificationLabel;
 import edu.jhu.ml.evaluator.AccuracyEvaluator;
+import edu.jhu.ml.hmm.HMMPredictor;
 import edu.jhu.ml.utilities.DataReader;
+
 
 /**
  * The implementation of an artificial neural network which will be used
@@ -534,8 +536,26 @@ public class NeuralNetwork extends Predictor
 			network.train(instances);
 			System.out.println(evaluator.evaluateLetterAccuracy(instances, 1));
 		}
-		
-		
 	}
+	
+	public Character predictCharacter(Instance instance) {
+    	double[] probabilities = this.predictProbabilities(instance);
+
+        double max = -1;
+        int label = -1;
+        for (int i = 0; i < probabilities.length; i++)
+        {
+            if (probabilities[i] > max)
+            {
+                max = probabilities[i];
+                label = i;
+            }
+        }
+        
+        return (char) (label + HMMPredictor.A_VAL);
+    	
+    }
+
 
 }
+

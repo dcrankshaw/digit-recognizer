@@ -2,9 +2,16 @@
 *.aux
 *.out
 *.log
+*.classpath
+*.settings
+*.project
 
+<<<<<<< HEAD
 *.classpath
 *.project
 *.DS_Store
 
+=======
+*.DS_Store
+>>>>>>> hmm-dev
 *.pdf
