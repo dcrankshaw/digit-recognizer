@@ -1,7 +1,17 @@
-package cs475.hmm;
+package edu.jhu.ml.hmm;
 
-import java.util.*;
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+
+import edu.jhu.ml.data.Instance;
+import edu.jhu.ml.predictor.NeuralNetwork;
+import edu.jhu.ml.data.label.*;
 
 public class HMMPredictor {
 
@@ -10,14 +20,17 @@ public class HMMPredictor {
     // NOTE: Probabilities are all log probabilities
     private HashMap<String, Double> transmissionProbabilities;
     private HashMap<Character, Double> firstLetterProbabilities;
-    private EmissionProbabilities emissions;
-    private Predictor letterPredictor;
-    private string trainingCorpus;
+    private HashMap<Character, Double> totalLetterProbabilities;
+    private HashMap<Character, EmissionProbabilities> emissions;
+    private NeuralNetwork letterPredictor;
+    private String trainingCorpus;
+    public static final int A_VAL = (int) 'a';
 
-    public HMMPredictor(Predictor p, String corpusLocation) {
+    public HMMPredictor(NeuralNetwork p, String corpusLocation) {
         transmissionProbabilities = new HashMap<String, Double>();
         firstLetterProbabilities = new HashMap<Character, Double>();
-        emissions = new EmissionProbabilities();
+        totalLetterProbabilities = new HashMap<Character, Double>();
+        emissions = new HashMap<Character, EmissionProbabilities>();
         letterPredictor = p;
         trainingCorpus = corpusLocation;
     }
@@ -30,21 +43,38 @@ public class HMMPredictor {
     // letter that the ANN predicted (which would be learned from the corpus).
     private void learnEmissionProbabilities(List<Instance> letterInstances) {
         for(Instance instance: letterInstances) {
-            Label x = letterPredictor.predict(instance);
-            Label z = instance.getLabel();
-            emissions.addObservation(x, z);
+            Character observed = letterPredictor.predictCharacter(instance);
+            		
+            		//getANNPrediction(letterPredictor.predict(instance));
+            Character actual = (char) (A_VAL + ((ClassificationLabel) instance.getLabel()).getLabel());
+            EmissionProbabilities current = emissions.get(observed);
+            if (current == null) {
+                current = new EmissionProbabilities(observed);
+            }
+            current.addObservation(actual);
+            emissions.put(observed, current);
         }
-        // TODO make sure these are log probs
-        emissions.calculateProbabilities();
+
+        for (EmissionProbabilities probs : emissions.values()) {
+            probs.calculateProbabilities();
+        }
     }
 
     // TODO Add smoothing
-    private void learnTransitionProbabilities(File corpus) {
-        BufferedReader reader = new BufferedReader(new FileReader(corpus));
+    private void learnCorpusParams(File corpus) {
+        BufferedReader reader = null;
+		try {
+			reader = new BufferedReader(new FileReader(corpus));
+		} catch (FileNotFoundException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
         double wordCount = 0;
         double bigramCount = 0;
+        double letterCount = 0;
         HashMap<String, Double> bigramCounts = new HashMap<String, Double>();
         HashMap<Character, Double> firstLetterCounts = new HashMap<Character, Double>();
+        HashMap<Character, Double> totalLetterCounts = new HashMap<Character, Double>();
         try {
             boolean done = false;
             while (!done) {
@@ -54,38 +84,41 @@ public class HMMPredictor {
                 } else {
                     String[] words = line.split(" ");
                     for (int i = 0; i < words.length; ++i) {
-                        bigramCount += updateTransmissionProbabilities(words[i], bigramCounts, firstLetterCounts);
+                    	String word = words[i].trim();
+                        updateTransmissionProbabilities(word, bigramCounts, firstLetterCounts, totalLetterCounts);
+                        bigramCount += word.length() - 1;
+                        letterCount += word.length();
                         ++wordCount;
                     }
 
                 }
             }
-        } catch (FileNotFoundException e ) {
+            reader.close();
 
         } catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
-        } finally {
-            reader.close();
-        }
-
-        //TODO Make sure to divide probs by wordCount
         for (String bigram : bigramCounts.keySet()) {
             Double count = transmissionProbabilities.get(bigram);
             Double prob = Math.log(count / bigramCount);
             transmissionProbabilities.put(bigram, prob);
         }
-        for (Character c : firstLetterCounts) {
+        for (Character c : firstLetterCounts.keySet()) {
             Double count = firstLetterCounts.get(c);
             Double prob = Math.log(count / wordCount);
             firstLetterProbabilities.put(c, prob);
         }
-
+        for (Character c : totalLetterCounts.keySet()) {
+            Double count = totalLetterCounts.get(c);
+            Double prob = Math.log(count / letterCount);
+            totalLetterProbabilities.put(c, prob);
+        }
     }
 
-    // returns the number of bigrams in the word
-    private double updateTransmissionProbabilities(String word, HashMap<String, Double> bigramCounts, HashMap<Character, Double> firstLetterCounts) {
+    private void updateTransmissionProbabilities(String word, HashMap<String, Double> bigramCounts, HashMap<Character, Double> firstLetterCounts, HashMap<Character, Double> totalLetterCounts) {
         word = word.trim();
-        double bigramCount = 0;
         Double firstLetterCount = firstLetterCounts.get(word.charAt(0));
         if (firstLetterCount == null) {
             firstLetterCount = new Double(0);
@@ -98,38 +131,44 @@ public class HMMPredictor {
                 prob = new Double(0);
             }
             bigramCounts.put(bigram, prob + 1);
-            ++bigramCount;
         }
-        return bigramCount;
+        // Count letter probabilities
+        for (int i = 0; i < word.length(); ++i) {
+            Double letterCount = totalLetterCounts.get(word.charAt(i));
+            if (letterCount == null) {
+                letterCount = new Double(0);
+            }
+            totalLetterCounts.put(word.charAt(i), letterCount + 1);
+        }
     }
 
     public void train(List<Instance> letterInstances) {
-        learnTransitionProbabilities(new File(corpusLocation));
+        learnCorpusParams(new File(trainingCorpus));
         learnEmissionProbabilities(letterInstances);
     }
+    
+    
 
-    // TODO figure out types for letters, words, labels, etc.
-    // My gut feeling is that we should create a CharacterLabel class.
-    public List<Label> predictWord(List<Instance> lettersInWord) {
+    public String predictWord(List<Instance> lettersInWord) {
         // This is the list of the letters predicted by the ANN.
-        List<Label> observedLabels = new ArrayList<Label>(lettersInWord.size());
+        List<Character> observedLetters = new ArrayList<Character>(lettersInWord.size());
         int i = 0;
         for (Instance letter : lettersInWord) {
-            observedLabels.set(i, letterPredictor.predict(letter));
+            observedLetters.set(i, letterPredictor.predictCharacter(letter));
             i += 1;
         }
+        return HMMPredictWord(observedLetters);
     }
+
 
     // An implementation of the Viterbi algorithm adapted from Wikipedia
     // http://en.wikipedia.org/wiki/Viterbi_algorithm
-    // TODO we probably want to convert to log probabilities later
-    private String predictWord(List<Character> observedCharacters) {
+    private String HMMPredictWord(List<Character> observedCharacters) {
         int wordLength = observedCharacters.size();
         double[][] maxProbs = new double[26][wordLength];
         int[][] maxProbChars = new int[26][wordLength];
-        int aVal = (int) 'a';
         for (int character = 0; character < 26; ++character) {
-            Character current = new Character((char) aVal + character);
+            Character current = (char) (A_VAL + character);
             maxProbs[character][0] = firstLetterProbabilities.get(current);
             maxProbChars[character][0] = 0;
         }
@@ -138,13 +177,19 @@ public class HMMPredictor {
                 int maxProbPrevChar = 0;
                 double maxProb = 0;
                 for (int prevChar = 0; prevChar < 26; ++prevChar) {
-                    Character prev = (char) aVal + prevChar;
-                    Character current = (char) aVal + curChar;
+                    Character prev = (char) (A_VAL + prevChar);
+                    Character current = (char) (A_VAL + curChar);
                     String bigram = "" + prev + current;
                     double Aij = transmissionProbabilities.get(bigram);
                     // The probability of observing observedCharacter[position]
-                    // if the real letter is curChar
-                    double Bjyi = emissions.getProbability(observedCharacters.get(position), current);
+                    // if the real letter is curChar P(x|z) = (P(z|x)*P(x)/P(z)
+                    // TODO BAYES THEOREM
+                    Character observed = observedCharacters.get(position);
+                    double Px = totalLetterProbabilities.get(observed);
+                    double Pz = totalLetterProbabilities.get(current);
+                    double PzGivenX = emissions.get(observed).getProbability(current);
+                    // They are log probabilities so we add and subtract
+                    double Bjyi = PzGivenX + Px - Pz;
                     // We add because these are log probabilities
                     double prob = maxProbs[prevChar][position - 1] + Aij + Bjyi;
                     if (prob > maxProb) {
@@ -156,7 +201,7 @@ public class HMMPredictor {
                 maxProbChars[curChar][position] = maxProbPrevChar;
             }
         }
-        int maxProb = 0;
+        double maxProb = 0;
         int maxProbLastChar = 0;
         for (int character = 0; character < 26; ++character) {
             if (maxProb < maxProbs[character][wordLength - 1]) {
@@ -165,12 +210,12 @@ public class HMMPredictor {
             }
         }
         StringBuilder word = new StringBuilder();
-        word.append((char) maxProbLastChar + aVal);
+        word.append((char) maxProbLastChar + A_VAL);
         int previousChar = maxProbChars[maxProbLastChar][wordLength - 1];
-        word.append((char) previousChar + aVal);
+        word.append((char) previousChar + A_VAL);
         for (int position = wordLength - 2; position > 0; --position) {
             previousChar = maxProbChars[previousChar][position];
-            word.append((char) previousChar + aVal);
+            word.append((char) previousChar + A_VAL);
         }
         word = word.reverse();
         return word.toString();

@@ -1,46 +1,48 @@
 package edu.jhu.ml.hmm;
 
-import java.util.*;
+import java.util.HashMap;
 
 public class EmissionProbabilities {
 
-    private HashMap<LatentObservedPair, Integer> emissionCounts;
-    private HashMap<LatentObservedPair, Double> emissionProbs;
+    private HashMap<Character, Integer> emissionCounts;
+    private HashMap<Character, Double> emissionProbs;
+    Character observed;
     private double totalPairs;
 
-    public EmissionProbabilities() {
-        emissionCounts = new HashMap<LatentObservedPair, Integer>();
-        emissionProbs = new HashMap<LatentObservedPair, Double>();
+    public EmissionProbabilities(Character c) {
+        emissionCounts = new HashMap<Character, Integer>();
+        emissionProbs = new HashMap<Character, Double>();
         totalPairs = 0;
+        observed = c;
     }
 
     public double getTotalPairs() { return totalPairs; }
 
-    public void addObservation(char observed, char actual){
-        LatentObservedPair pair = new LatentObservedPair(observed, actual);
-        Double prob = emissionCounts.get(pair);
+    public void addObservation(char actual){
+        //LatentObservedPair pair = new LatentObservedPair(observed, actual);
+        Integer prob = emissionCounts.get(actual);
         if (prob == null) {
-            prob = new Double(0);
+            prob = new Integer(0);
         }
-        emissionCounts.put(pair, prob + 1);
+        emissionCounts.put(actual, prob + 1);
         totalPairs += 1;
     }
 
     // Really these are log probabilities
     public void calculateProbabilities() {
         emissionProbs.clear();
-        for (LatentObservedPair pair : emissionCounts.keySet()) {
-            Double count = (Double) emissionCounts.get(pair);
+        for (Character c : emissionCounts.keySet()) {
+            Double count = new Double(emissionCounts.get(c));
             Double logProb = Math.log(count / totalPairs);
-            emissionProbs.put(pair, logProb);
+            emissionProbs.put(c, logProb);
         }
     }
 
-    public Double getProbability(char observed, char actual) {
-        return emissionProbs.get(new LatentObservedPair(observed, actual));
+    public Double getProbability(char actual) {
+        return emissionProbs.get(actual);
     }
 
-    private final class LatentObservedPair {
+    /*private final class LatentObservedPair {
 
         private final char observed;
         private final char latent;
@@ -66,5 +68,5 @@ public class EmissionProbabilities {
             return result;
         }
 
-    }
+    }*/
 }

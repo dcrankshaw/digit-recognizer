@@ -38,6 +38,7 @@ public class Classify
 
     public static void main(String[] args)
     {
+        // TODO update reading args
         String[] mandatoryArgs = {"mode", "algorithm", "data", "model"};
         Classify.createCommandLineOptions();
         CommandLineUtilities.initCommandLineParameters(args, Classify.options, mandatoryArgs);
@@ -79,10 +80,16 @@ public class Classify
      */
     public static void createCommandLineOptions()
     {
-        Classify.registerOption("mode", "String", true, "Operating mode: train or test.");
-        Classify.registerOption("data", "String", true, "The path to the data file.");
-        Classify.registerOption("algorithm", "String", true, "The algorithm to use.");
-        Classify.registerOption("model", "String", true, "The path to the model file.");
+        //Classify.registerOption("mode", "String", true, "Operating mode: train or test.");
+        //Classify.registerOption("data", "String", true, "The path to the data file.");
+        //Classify.registerOption("algorithm", "String", true, "The algorithm to use.");
+        //Classify.registerOption("model", "String", true, "The path to the model file.");
+        Classify.registerOption("ann_training_data", "String", true, "The location of the training letters for the ANN.");
+        Classify.registerOption("hmm_letter_training_data", "String", true, "The location of the training letters for the HMM.");
+        Classify.registerOption("train_corpus", "String", true, "Location of the training corpus for the HMM.");
+        Classify.registerOption("test_corpus", "String", true, "Location of the test corpus to draw random words from.");
+        Classify.registerOption("test_letter_directory", "String", true, "Location of the directory containing the test letters. Assumes files contained are named $LETTER.txt");
+        Classify.registerOption("output_directory", "String", true, "Output location. Will contain 3 files corresponding to the 3 word size buckets.");
     }
 
     /**
