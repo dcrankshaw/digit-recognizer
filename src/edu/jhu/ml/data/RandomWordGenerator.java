@@ -21,26 +21,54 @@ public class RandomWordGenerator
 	/**
 	 * The number of times a specific letter appears.
 	 */
-	private static int[] letterCounts;
+	private int[] letterCounts;
 	
 	/**
 	 * The file path to the folder with the letter text files.
 	 */
-	private static final String filePath = "data/letters/";
+	private String filePath;
 	
 	/**
 	 * Counts of how many times each word appears.
 	 */
-	private static HashMap<String, Double> wordProbabilities;
+	private HashMap<String, Double> wordProbabilities;
+	
+	private int minWordLength;
+	
+	private int maxWordLength;
+	
+	private String corpusFile;
+	
+	private int wordCount;
+	
+	
+	public RandomWordGenerator(int min, int max, String corpus, String lettersDirectory) {
+		filePath = lettersDirectory;
+		minWordLength = min;
+		maxWordLength = max;
+		corpusFile = corpus;
+		// Initialize word probabilities
+		try {
+			countWords();
+			countNumberOfLetters();
+		} catch (FileNotFoundException e) {
+			System.out.println("Bad file location");
+		}
+		
+		
+	}
+	public int getWordCount() {
+		return wordCount;
+	}
 	
 	/**
 	 * Randomly selects a word from the corpus, then randomly selects instances
 	 * to make up the handwritten word.
 	 * @return A list of Instance which make up the word.
 	 */
-	public static List<Instance> randomWord() throws FileNotFoundException
+	public List<Instance> randomWord() throws FileNotFoundException
 	{
-		return RandomWordGenerator.generateWord(RandomWordGenerator.pickRandomWord());
+		return generateWord(pickRandomWord());
 	}
 	
 	/**
@@ -48,20 +76,18 @@ public class RandomWordGenerator
 	 * @return The random word.
 	 * @throws FileNotFoundException If the file is not found.
 	 */
-	private static String pickRandomWord() throws FileNotFoundException
+	private String pickRandomWord() throws FileNotFoundException
 	{
-		if (RandomWordGenerator.wordProbabilities == null)
-			RandomWordGenerator.countWords();
 		
 		Random random = new Random();
 		double probability = random.nextDouble();
 		double sum = 0;
 		
-		Set<String> words = RandomWordGenerator.wordProbabilities.keySet();
+		Set<String> words = wordProbabilities.keySet();
 		
 		for (String word : words)
 		{
-			sum += RandomWordGenerator.wordProbabilities.get(word);
+			sum += wordProbabilities.get(word);
 			if (probability <= sum)
 				return word;
 		}
@@ -74,10 +100,8 @@ public class RandomWordGenerator
 	 * @param word The word.
 	 * @return A list of Instances that represent the letters which make up that word.
 	 */
-	public static List<Instance> generateWord(String word) throws FileNotFoundException
+	public List<Instance> generateWord(String word) throws FileNotFoundException
 	{
-		if (RandomWordGenerator.letterCounts == null)
-			RandomWordGenerator.countNumberOfLetters();
 		
 		List<Instance> instances = new ArrayList<Instance>();
 		Random random = new Random();
@@ -87,8 +111,8 @@ public class RandomWordGenerator
 		{
 			if (letters[i] != ' ')
 			{
-				int index = random.nextInt(RandomWordGenerator.letterCounts[letters[i] - 'a']);
-				String line = RandomWordGenerator.readInstance(letters[i], index);
+				int index = random.nextInt(letterCounts[letters[i] - 'a']);
+				String line = readInstance(letters[i], index);
 				
 				instances.add(RandomWordGenerator.createInstance(line));
 			}
@@ -105,29 +129,33 @@ public class RandomWordGenerator
 	 * Counts the number of times each word appears in the corpus.
 	 * @throws FileNotFoundException 
 	 */
-	private static void countWords() throws FileNotFoundException
+	private void countWords() throws FileNotFoundException
 	{
 		HashMap<String, Integer> wordCounts = new HashMap<String, Integer>();
-		Scanner scanner = new Scanner(new FileReader("data/corpus/clean_moby_dick.txt"));
+		Scanner scanner = new Scanner(new FileReader(corpusFile));
 		
-		int totalWords = 0;
+		wordCount = 0;
 		
 		while (scanner.hasNext())
 		{
-			String word = scanner.next();
-			totalWords++;
-			
-			if (!wordCounts.containsKey(word))
-				wordCounts.put(word, 1);
-			else
-				wordCounts.put(word, wordCounts.get(word) + 1);
+			String word = scanner.next().trim();
+			if (word.length() <= maxWordLength && word.length() >= minWordLength) {
+				wordCount++;
+				if (!wordCounts.containsKey(word)) {
+					wordCounts.put(word, 1);
+				}
+				else {
+					wordCounts.put(word, wordCounts.get(word) + 1);
+				}
+			}
 		}
 		
-		RandomWordGenerator.wordProbabilities = new HashMap<String, Double>();
+		wordProbabilities = new HashMap<String, Double>();
 		Set<String> words = wordCounts.keySet();
 		
-		for (String word : words)
-			RandomWordGenerator.wordProbabilities.put(word, (double) wordCounts.get(word) / totalWords);
+		for (String word : words) {
+			wordProbabilities.put(word, (double) wordCounts.get(word) / wordCount);
+		}
 	}
 	
 	/**
@@ -136,9 +164,9 @@ public class RandomWordGenerator
 	 * @param index The specific Index.
 	 * @return The String at that line of the file.
 	 */
-	private static String readInstance(char letter, int index) throws FileNotFoundException
+	private String readInstance(char letter, int index) throws FileNotFoundException
 	{
-		Scanner scanner = new Scanner(new FileReader(RandomWordGenerator.filePath + letter + ".txt"));
+		Scanner scanner = new Scanner(new FileReader(filePath + letter + ".txt"));
 		
 		int count = 0;
 		while (scanner.hasNextLine())
@@ -181,26 +209,18 @@ public class RandomWordGenerator
 	 * Counts how many times each letter appears and stores the counts in
 	 * a static array.
 	 */
-	private static void countNumberOfLetters() throws FileNotFoundException
+	private void countNumberOfLetters() throws FileNotFoundException
 	{
-		RandomWordGenerator.letterCounts = new int[26];
+		letterCounts = new int[26];
 		
 		for (int i = 'a'; i <= 'z'; i++)
 		{
-			Scanner scanner = new Scanner(new FileReader(RandomWordGenerator.filePath + ((char) i) + ".txt"));
+			Scanner scanner = new Scanner(new FileReader(filePath + ((char) i) + ".txt"));
 			while (scanner.hasNextLine())
 			{
-				RandomWordGenerator.letterCounts[i - 'a']++;
+				letterCounts[i - 'a']++;
 				scanner.nextLine();
 			}
-		}
-	}
-	
-	public static void main(String[] args) throws FileNotFoundException
-	{
-		for (int i = 0; i < 100; i++)
-		{
-			System.out.println(RandomWordGenerator.randomWord());
 		}
 	}
 }
