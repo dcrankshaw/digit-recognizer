@@ -137,7 +137,7 @@ public class NeuralNetwork extends Predictor
 			System.out.println("iteration: " + counter++);
 			System.out.println("cost: " + lastCost);
 			System.out.println("difference: " + difference);
-			System.out.println("learing rate: " + learningRate);
+			System.out.println("learning rate: " + learningRate);
 			System.out.println();
 			
 			

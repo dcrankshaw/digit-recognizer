@@ -69,6 +69,7 @@ public class AccuracyEvaluator
 			annPartialPrediction.append(annPredictor.predictCharacter(i));
 		}
 		String annPrediction = annPartialPrediction.toString();
+		System.out.println("actual: " + word + " hmm: " + hmmPrediction + " ann: " + annPrediction);
 		totalLettersEvaluated += word.length();
 		++totalWordsEvaluated;
 		int annCharsCorrect = 0;

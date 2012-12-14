@@ -1,6 +1,6 @@
 moby dick or the whale
 by herman melville
-chapter 1 loomings
+chapter  loomings
 call me ishmael some years agonever mind how long preciselyhaving
 little or no money in my purse and nothing particular to interest me on
 shore i thought i would sail about a little and see the watery part of
@@ -205,7 +205,7 @@ all one grand hooded phantom like a snow hill in the air
 
 
 
-chapter 2 the carpetbag
+chapter  the carpetbag
 
 
 i stuffed a shirt or two into my old carpetbag tucked it under my arm
@@ -337,7 +337,7 @@ and see what sort of a place this spouter may be
 
 
 
-chapter 3 the spouterinn
+chapter  the spouterinn
 
 
 entering that gableended spouterinn you found yourself in a wide
@@ -904,7 +904,7 @@ i turned in and never slept better in my life
 
 
 
-chapter 4 the counterpane
+chapter  the counterpane
 
 
 upon waking next morning about daylight i found queequegs arm thrown
@@ -929,7 +929,7 @@ think it was trying to crawl up the chimney as i had seen a little
 sweep do a few days previous and my stepmother who somehow or other
 was all the time whipping me or sending me to bed supperlessmy
 mother dragged me by the legs out of the chimney and packed me off to
-bed though it was only two oclock in the afternoon of the 21st june
+bed though it was only two oclock in the afternoon of the st june
 the longest day in the year in our hemisphere i felt dreadfully but
 there was no help for it so up stairs i went to my little room in the
 third floor undressed myself as slowly as possible so as to kill time
@@ -1050,7 +1050,7 @@ harpoon like a marshals baton
 
 
 
-chapter 5 breakfast
+chapter  breakfast
 
 
 i quickly followed suit and descending into the barroom accosted the
@@ -1127,7 +1127,7 @@ sallied out for a stroll
 
 
 
-chapter 6 the street
+chapter  the street
 
 
 if i had been astonished at first catching a glimpse of so outlandish
@@ -1213,7 +1213,7 @@ the puritanic sands
 
 
 
-chapter 7 the chapel
+chapter  the chapel
 
 
 in this same new bedford there stands a whalemans chapel and few are
@@ -1235,17 +1235,17 @@ something like the following but i do not pretend to quote
 
 sacred to the memory of john talbot who at the age of eighteen was
 lost overboard near the isle of desolation off patagonia november
-1st 1836 this tablet is erected to his memory by his sister
+st  this tablet is erected to his memory by his sister
 
 sacred to the memory of robert long willis ellery nathan coleman
 walter canny seth macy and samuel gleig forming one of the boats
 crews of the ship eliza who were towed out of sight by a whale on the
-offshore ground in the pacific december 31st 1839 this marble is
+offshore ground in the pacific december st  this marble is
 here placed by their surviving shipmates
 
 sacred to the memory of the late captain ezekiel hardy who in the bows
 of his boat was killed by a sperm whale on the coast of japan august
-3d 1833 this tablet is erected to his memory by his widow
+d  this tablet is erected to his memory by his widow
 
 shaking off the sleet from my iceglazed hat and jacket i seated myself
 near the door and turning sideways was surprised to see queequeg near
@@ -1306,7 +1306,7 @@ stove body when they will for stave my soul jove himself cannot
 
 
 
-chapter 8 the pulpit
+chapter  the pulpit
 
 
 i had not been seated very long ere a man of a certain venerable
@@ -1398,7 +1398,7 @@ and the pulpit is its prow
 
 
 
-chapter 9 the sermon
+chapter  the sermon
 
 
 father mapple rose and in a mild voice of unassuming authority ordered
@@ -1732,7 +1732,7 @@ and he was left alone in the place
 
 
 
-chapter 10 a bosom friend
+chapter  a bosom friend
 
 
 returning to the spouterinn from the chapel i found queequeg there
@@ -1876,7 +1876,7 @@ honeymoon lay i and queequega cosy loving pair
 
 
 
-chapter 11 nightgown
+chapter  nightgown
 
 
 we had lain thus in bed chatting and napping at short intervals and
@@ -1942,7 +1942,7 @@ it may prove in the mere skeleton i give
 
 
 
-chapter 12 biographical
+chapter  biographical
 
 
 queequeg was a native of rokovoko an island far away to the west and
@@ -2026,7 +2026,7 @@ rolled over from each other this way and that and very soon were
 sleeping
 
 
-chapter 13 wheelbarrow
+chapter  wheelbarrow
 
 
 next morning monday after disposing of the embalmed head to a barber
@@ -2191,7 +2191,7 @@ cannibals must help these christians
 
 
 
-chapter 14 nantucket
+chapter  nantucket
 
 
 nothing more happened on the passage worthy the mentioning so after a
@@ -2265,7 +2265,7 @@ walruses and whales
 
 
 
-chapter 15 chowder
+chapter  chowder
 
 
 it was quite late in the evening when the little moss came snugly
@@ -2388,7 +2388,7 @@ variety
 
 
 
-chapter 16 the ship
+chapter  the ship
 
 
 in bed we concocted our plans for the morrow but to my surprise and
@@ -2749,9 +2749,9 @@ degree of importance pertaining to the respective duties of the ships
 company i was also aware that being a green hand at whaling my own
 lay would not be very large but considering that i was used to the sea
 could steer a ship splice a rope and all that i made no doubt that
-from all i had heard i should be offered at least the 275th laythat
-is the 275th part of the clear net proceeds of the voyage whatever
-that might eventually amount to and though the 275th lay was what they
+from all i had heard i should be offered at least the th laythat
+is the th part of the clear net proceeds of the voyage whatever
+that might eventually amount to and though the th lay was what they
 call a rather long lay yet it was better than nothing and if we had a
 lucky voyage might pretty nearly pay for the clothing i would wear out
 on it not to speak of my three years beef and board for which i would
@@ -2761,9 +2761,9 @@ it might be thought that this was a poor way to accumulate a princely
 fortuneand so it was a very poor way indeed but i am one of those
 that never take on about princely fortunes and am quite content if the
 world is ready to board and lodge me while i am putting up at this grim
-sign of the thunder cloud upon the whole i thought that the 275th lay
+sign of the thunder cloud upon the whole i thought that the th lay
 would be about the fair thing but would not have been surprised had i
-been offered the 200th considering i was of a broadshouldered make
+been offered the th considering i was of a broadshouldered make
 
 but one thing nevertheless that made me a little distrustful about
 receiving a generous share of the profits was this ashore i had heard
@@ -2947,7 +2947,7 @@ present dark ahab slipped my mind
 
 
 
-chapter 17 the ramadan
+chapter  the ramadan
 
 
 as queequegs ramadan or fasting and humiliation was to continue all
@@ -3175,7 +3175,7 @@ pequod sauntering along and picking our teeth with halibut bones
 
 
 
-chapter 18 his mark
+chapter  his mark
 
 
 as we were walking down the end of the wharf towards the ship queequeg
@@ -3327,7 +3327,7 @@ otherwise might have been wasted
 
 
 
-chapter 19 the prophet
+chapter  the prophet
 
 
 shipmates have ye shipped in that ship
@@ -3476,7 +3476,7 @@ seemed to me i pronounced him in my heart a humbug
 
 
 
-chapter 20 all astir
+chapter  all astir
 
 
 a day or two passed and there was great activity aboard the pequod
@@ -3566,7 +3566,7 @@ certainly sail so next morning queequeg and i took a very early start
 
 
 
-chapter 21 going aboard
+chapter  going aboard
 
 
 it was nearly six oclock but only grey imperfect misty dawn when we
@@ -3714,7 +3714,7 @@ enshrined within his cabin
 
 
 
-chapter 22 merry christmas
+chapter  merry christmas
 
 
 at length towards noon upon the final dismissal of the ships riggers
@@ -3883,7 +3883,7 @@ atlantic
 
 
 
-chapter 23 the lee shore
+chapter  the lee shore
 
 
 some chapters back one bulkington was spoken of a tall newlanded
@@ -3925,7 +3925,7 @@ oceanperishingstraight up leaps thy apotheosis
 
 
 
-chapter 24 the advocate
+chapter  the advocate
 
 
 as queequeg and i are now fairly embarked in this business of whaling
@@ -3976,13 +3976,13 @@ why did the dutch in de witts time have admirals of their whaling
 fleets why did louis xvi of france at his own personal expense fit
 out whaling ships from dunkirk and politely invite to that town some
 score or two of families from our own island of nantucket why did
-britain between the years 1750 and 1788 pay to her whalemen in bounties
-upwards of l1000000 and lastly how comes it that we whalemen of
+britain between the years  and  pay to her whalemen in bounties
+upwards of l and lastly how comes it that we whalemen of
 america now outnumber all the rest of the banded whalemen in the world
 sail a navy of upwards of seven hundred vessels manned by eighteen
-thousand men yearly consuming 4000000 of dollars the ships worth
-at the time of sailing 20000000 and every year importing into our
-harbors a well reaped harvest of 7000000 how comes all this if
+thousand men yearly consuming  of dollars the ships worth
+at the time of sailing  and every year importing into our
+harbors a well reaped harvest of  how comes all this if
 there be not something puissant in whaling
 
 but this is not the half look again
@@ -4103,7 +4103,7 @@ whaleship was my yale college and my harvard
 
 
 
-chapter 25 postscript
+chapter  postscript
 
 
 in behalf of the dignity of whaling i would fain advance naught but
@@ -4137,7 +4137,7 @@ queens with coronation stuff
 
 
 
-chapter 26 knights and squires
+chapter  knights and squires
 
 
 the chief mate of the pequod was starbuck a native of nantucket and a
@@ -4250,7 +4250,7 @@ the kingly commons bear me out in it o god
 
 
 
-chapter 27 knights and squires
+chapter  knights and squires
 
 
 stubb was the second mate he was a native of cape cod and hence
@@ -4403,7 +4403,7 @@ beat his tambourine in glory called a coward here hailed a hero there
 
 
 
-chapter 28 ahab
+chapter  ahab
 
 
 for several days after leaving nantucket nothing above hatches was seen
@@ -4532,7 +4532,7 @@ other man would have soon flowered out in a smile
 
 
 
-chapter 29 enter ahab to him stubb
+chapter  enter ahab to him stubb
 
 
 some days elapsed and ice and icebergs all astern the pequod now
@@ -4646,7 +4646,7 @@ daylight
 
 
 
-chapter 30 the pipe
+chapter  the pipe
 
 
 when stubb had departed ahab stood for a while leaning over the
@@ -4679,7 +4679,7 @@ made with slouched hat ahab lurchingly paced the planks
 
 
 
-chapter 31 queen mab
+chapter  queen mab
 
 
 next morning stubb accosted flask
@@ -4756,7 +4756,7 @@ ahab has that thats bloody on his mind but mum he comes this way
 
 
 
-chapter 32 cetology
+chapter  cetology
 
 
 already we are boldly launched upon the deep but soon we shall be lost
@@ -4773,12 +4773,12 @@ classification of the constituents of a chaos nothing less is here
 essayed listen to what the best and latest authorities have laid down
 
 no branch of zoology is so much involved as that which is entitled
-cetology says captain scoresby ad 1820
+cetology says captain scoresby ad 
 
 it is not my intention were it in my power to enter into the
 inquiry as to the true method of dividing the cetacea into groups and
 families utter confusion exists among the historians of this animal
-sperm whale says surgeon beale ad 1839
+sperm whale says surgeon beale ad 
 
 unfitness to pursue our research in the unfathomable waters
 impenetrable veil covering our knowledge of the cetacea a field
@@ -4854,8 +4854,8 @@ settle
 first the uncertain unsettled condition of this science of cetology
 is in the very vestibule attested by the fact that in some quarters it
 still remains a moot point whether a whale be a fish in his system of
-nature ad 1776 linnaeus declares i hereby separate the whales from
-the fish but of my own knowledge i know that down to the year 1850
+nature ad  linnaeus declares i hereby separate the whales from
+the fish but of my own knowledge i know that down to the year 
 sharks and shad alewives and herring against linnaeuss express edict
 were still found dividing the possession of the same seas with the
 leviathan
@@ -5185,7 +5185,7 @@ down above as duodecimoes are infallibly whales by the terms of my
 definition of what a whale isie a spouting fish with a horizontal
 tail
 
-book iii duodecimo chapter 1 huzza porpoisethis is the
+book iii duodecimo chapter  huzza porpoisethis is the
 common porpoise found almost all over the globe the name is of my own
 bestowal for there are more than one sort of porpoises and something
 must be done to distinguish them i call him thus because he always
@@ -5259,7 +5259,7 @@ draught of a draught oh time strength cash and patience
 
 
 
-chapter 33 the specksnyder
+chapter  the specksnyder
 
 
 concerning the officers of the whalecraft this seems as good a place
@@ -5357,7 +5357,7 @@ featured in the unbodied air
 
 
 
-chapter 34 the cabintable
+chapter  the cabintable
 
 
 it is noon and doughboy the steward thrusting his pale loafofbread
@@ -5558,7 +5558,7 @@ sullen paws of its gloom
 
 
 
-chapter 35 the masthead
+chapter  the masthead
 
 
 it was during the more pleasant weather that in due rotation with the
@@ -5793,7 +5793,7 @@ for ever heed it well ye pantheists
 
 
 
-chapter 36 the quarterdeck
+chapter  the quarterdeck
 
 
 enter ahab then all
@@ -6099,7 +6099,7 @@ dispersed and ahab retired within his cabin
 
 
 
-chapter 37 sunset
+chapter  sunset
 
 
 the cabin by the stern windows ahab sitting alone and gazing out
@@ -6151,7 +6151,7 @@ way
 
 
 
-chapter 38 dusk
+chapter  dusk
 
 
 by the mainmast starbuck leaning against it
@@ -6194,7 +6194,7 @@ phantom futures stand by me hold me bind me o ye blessed influences
 
 
 
-chapter 39 first night watch
+chapter  first night watch
 
 foretop
 
@@ -6228,7 +6228,7 @@ through with this jobcoming
 
 
 
-chapter 40 midnight forecastle
+chapter  midnight forecastle
 
 harpooneers and sailors
 
@@ -6239,7 +6239,7 @@ lying in various attitudes all singing in chorus
      farewell and adieu to you ladies of spain
      our captains commanded
 
-1st nantucket sailor oh boys dont be sentimental its bad for the
+st nantucket sailor oh boys dont be sentimental its bad for the
 digestion take a tonic follow me sings and all follow
 
     our captain stood upon the deck
@@ -6255,7 +6255,7 @@ digestion take a tonic follow me sings and all follow
 
 mates voice from the quarterdeck eight bells there forward
 
-2nd nantucket sailor avast the chorus eight bells there dye hear
+nd nantucket sailor avast the chorus eight bells there dye hear
 bellboy strike the bell eight thou pip thou blackling and let me
 call the watch ive the sort of mouth for thatthe hogshead mouth
 so so thrusts his head down the scuttle starboleens ahoy
@@ -6324,7 +6324,7 @@ crews well well belike the whole worlds a ball as you scholars have
 it and so tis right to make one ballroom of it dance on lads youre
 young i was once
 
-3d nantucket sailor spell ohwhew this is worse than pulling after
+d nantucket sailor spell ohwhew this is worse than pulling after
 whales in a calmgive us a whiff tash
 
 they cease dancing and gather in clusters meantime the sky
@@ -6364,7 +6364,7 @@ holdest well done the mate there holds ye to it stiffly hes no more
 afraid than the isle fort at cattegat put there to fight the baltic
 with stormlashed guns on which the seasalt cakes
 
-4th nantucket sailor he has his orders mind ye that i heard old
+th nantucket sailor he has his orders mind ye that i heard old
 ahab tell him he must always kill a squall something as they burst a
 waterspout with a pistolfire your ship right into it
 
@@ -6393,7 +6393,7 @@ st jagos sailor that spaniards mad or drunk but that cant be or
 else in his one case our old moguls firewaters are somewhat long in
 working
 
-5th nantucket sailor whats that i sawlightning yes
+th nantucket sailor whats that i sawlightning yes
 
 spanish sailor no daggoo showing his teeth
 
@@ -6439,7 +6439,7 @@ bowels to feel fear
 
 
 
-chapter 41 moby dick
+chapter  moby dick
 
 
 i ishmael was one of that crew my shouts had gone up with the rest
@@ -6791,7 +6791,7 @@ ill
 
 
 
-chapter 42 the whiteness of the whale
+chapter  the whiteness of the whale
 
 
 what the white whale was to ahab has been hinted what at times he
@@ -7149,7 +7149,7 @@ hunt
 
 
 
-chapter 43 hark
+chapter  hark
 
 
 hist did you hear that noise cabaco
@@ -7198,7 +7198,7 @@ tish the bucket
 
 
 
-chapter 44 the chart
+chapter  the chart
 
 
 had you followed captain ahab down into his cabin after the squall that
@@ -7248,7 +7248,7 @@ charts of the sperm whale
 
      since the above was written the statement is happily borne
      out by an official circular issued by lieutenant maury of
-     the national observatory washington april 16th 1851 by
+     the national observatory washington april th  by
      that circular it appears that precisely such a chart is in
      course of completion and portions of it are presented in
      the circular this chart divides the ocean into districts
@@ -7393,7 +7393,7 @@ he creates
 
 
 
-chapter 45 the affidavit
+chapter  the affidavit
 
 
 so far as what there may be of a narrative in this book and indeed as
@@ -7528,7 +7528,7 @@ whale is in some cases sufficiently powerful knowing and judiciously
 malicious as with direct aforethought to stave in utterly destroy and
 sink a large ship and what is more the sperm whale has done it
 
-first in the year 1820 the ship essex captain pollard of nantucket
+first in the year  the ship essex captain pollard of nantucket
 was cruising in the pacific ocean one day she saw spouts lowered her
 boats and gave chase to a shoal of sperm whales ere long several of
 the whales were wounded when suddenly a very large whale escaping
@@ -7572,11 +7572,11 @@ contemplation seemed scarcely entitled to a moments thought the
 dismal looking wreck and the horrid aspect and revenge of the whale
 wholly engrossed my reflections until day again made its appearance
 
-in another placep 45he speaks of the mysterious and mortal attack
+in another placep he speaks of the mysterious and mortal attack
 of the animal
 
 
-secondly the ship union also of nantucket was in the year 1807
+secondly the ship union also of nantucket was in the year 
 totally lost off the azores by a similar onset but the authentic
 particulars of this catastrophe i have never chanced to encounter
 though from the whale hunters i have now and then heard casual allusions
@@ -7724,7 +7724,7 @@ whale
 
 
 
-chapter 46 surmises
+chapter  surmises
 
 
 though consumed with the hot fire of his purpose ahab in all his
@@ -7824,7 +7824,7 @@ reporting even a porpoise this vigilance was not long without reward
 
 
 
-chapter 47 the matmaker
+chapter  the matmaker
 
 
 it was a cloudy sultry afternoon the seamen were lazily lounging
@@ -7928,7 +7928,7 @@ surrounded by five dusky phantoms that seemed fresh formed out of air
 
 
 
-chapter 48 the first lowering
+chapter  the first lowering
 
 
 the phantoms for so they then seemed were flitting on the other side
@@ -8328,7 +8328,7 @@ our perishingan oar or a lance pole
 
 
 
-chapter 49 the hyena
+chapter  the hyena
 
 
 there are certain queer times and occasions in this strange mixed affair
@@ -8414,7 +8414,7 @@ devil fetch the hindmost
 
 
 
-chapter 50 ahabs boat and crew fedallah
+chapter  ahabs boat and crew fedallah
 
 
 who would have thought it flask cried stubb if i had but one leg
@@ -8513,7 +8513,7 @@ amours
 
 
 
-chapter 51 the spiritspout
+chapter  the spiritspout
 
 
 days weeks passed and under easy sail the ivory pequod had slowly
@@ -8661,7 +8661,7 @@ gale still thou steadfastly eyest thy purpose
 
 
 
-chapter 52 the albatross
+chapter  the albatross
 
 
 southeastward from the cape off the distant crozetts a good cruising
@@ -8733,7 +8733,7 @@ either lead us on in barren mazes or midway leave us whelmed
 
 
 
-chapter 53 the gam
+chapter  the gam
 
 
 the ostensible reason why ahab did not go on board of the whaler we had
@@ -8885,7 +8885,7 @@ hair and hold on there like grim death
 
 
 
-chapter 54 the townhos story
+chapter  the townhos story
 
 
 as told at the golden inn
@@ -9694,7 +9694,7 @@ seen and talked with steelkilt since the death of radney
 
 
 
-chapter 55 of the monstrous pictures of whales
+chapter  of the monstrous pictures of whales
 
 
 i shall ere long paint to you as well as one can without canvas
@@ -9751,7 +9751,7 @@ imitated i take it from the like figures on antique vases
 though universally denominated a dolphin i nevertheless call this
 bookbinders fish an attempt at a whale because it was so intended
 when the device was first introduced it was introduced by an old
-italian publisher somewhere about the 15th century during the revival
+italian publisher somewhere about the th century during the revival
 of learning and in those days and even down to a comparatively
 late period dolphins were popularly supposed to be a species of the
 leviathan
@@ -9766,7 +9766,7 @@ curious whales
 but quitting all these unprofessional attempts let us glance at those
 pictures of leviathan purporting to be sober scientific delineations
 by those who know in old harriss collection of voyages there are some
-plates of whales extracted from a dutch book of voyages ad 1671
+plates of whales extracted from a dutch book of voyages ad 
 entitled a whaling voyage to spitzbergen in the ship jonas in the
 whale peter peterson of friesland master in one of those plates the
 whales like great rafts of logs are represented lying among iceisles
@@ -9779,7 +9779,7 @@ a post captain in the english navy entitled a voyage round cape horn
 into the south seas for the purpose of extending the spermaceti whale
 fisheries in this book is an outline purporting to be a picture of
 a physeter or spermaceti whale drawn by scale from one killed on the
-coast of mexico august 1793 and hoisted on deck i doubt not the
+coast of mexico august  and hoisted on deck i doubt not the
 captain had this veracious picture taken for the benefit of his marines
 to mention but one thing about it let me say that it has an eye which
 applied according to the accompanying scale to a full grown sperm
@@ -9790,14 +9790,14 @@ of that eye
 nor are the most conscientious compilations of natural history for
 the benefit of the young and tender free from the same heinousness of
 mistake look at that popular work goldsmiths animated nature in the
-abridged london edition of 1807 there are plates of an alleged whale
+abridged london edition of  there are plates of an alleged whale
 and a narwhale i do not wish to seem inelegant but this unsightly
 whale looks much like an amputated sow and as for the narwhale one
 glimpse at it is enough to amaze one that in this nineteenth century
 such a hippogriff could be palmed for genuine upon any intelligent
 public of schoolboys
 
-then again in 1825 bernard germain count de lacepede a great
+then again in  bernard germain count de lacepede a great
 naturalist published a scientific systemized whale book wherein are
 several pictures of the different species of the leviathan all these
 are not only incorrect but the picture of the mysticetus or greenland
@@ -9807,7 +9807,7 @@ counterpart in nature
 
 but the placing of the capsheaf to all this blundering business was
 reserved for the scientific frederick cuvier brother to the famous
-baron in 1836 he published a natural history of whales in which he
+baron in  he published a natural history of whales in which he
 gives what he calls a picture of the sperm whale before showing that
 picture to any nantucketer you had best provide for your summary
 retreat from nantucket in a word frederick cuviers sperm whale is not
@@ -9876,7 +9876,7 @@ best not be too fastidious in your curiosity touching this leviathan
 
 
 
-chapter 56 of the less erroneous pictures of whales and the true
+chapter  of the less erroneous pictures of whales and the true
 pictures of whaling scenes
 
 
@@ -10001,7 +10001,7 @@ excited seamen
 
 
 
-chapter 57 of whales in paint in teeth in wood in sheetiron in
+chapter  of whales in paint in teeth in wood in sheetiron in
 stone in mountains in stars
 
 
@@ -10102,7 +10102,7 @@ encamped beyond my mortal sight
 
 
 
-chapter 58 brit
+chapter  brit
 
 
 steering northeastward from the crozetts we fell in with vast meadows
@@ -10205,7 +10205,7 @@ half known life god keep thee push not off from that isle thou canst
 never return
 
 
-chapter 59 squid
+chapter  squid
 
 
 slowly wading through the meadows of brit the pequod still held on her
@@ -10305,7 +10305,7 @@ but only as the anak of the tribe
 
 
 
-chapter 60 the line
+chapter  the line
 
 
 with reference to the whaling scene shortly to be described as well as
@@ -10440,7 +10440,7 @@ your evening fire with a poker and not a harpoon by your side
 
 
 
-chapter 61 stubb kills a whale
+chapter  stubb kills a whale
 
 
 if to starbuck the apparition of the squid was a thing of portents to
@@ -10641,7 +10641,7 @@ thoughtfully eyeing the vast corpse he had made
 
 
 
-chapter 62 the dart
+chapter  the dart
 
 
 a word concerning an incident in the last chapter

@@ -46,7 +46,7 @@ public class Classify
     public static String test_corpus = "data/corpus/test_corpus.txt";
     public static String test_letter_directory = "data/letters/";
     public static String output_directory = "data/output/";
-    public static String ann_model_saved = "/data/models/ann.model";
+    public static String ann_model_saved = "data/models/ann.model";
 
     
     
@@ -97,13 +97,13 @@ public class Classify
     		annPredictor = (NeuralNetwork) Classify.loadObject(ann_model_input);
     	} else {
     		// Train Neural Network and save
-    		DataReader annTrainDataReader = new DataReader("ann_training_data");
+    		DataReader annTrainDataReader = new DataReader(ann_training_data);
     		List<Instance> instances = annTrainDataReader.read();
     		annPredictor = new NeuralNetwork(50, 50);
     		annPredictor.train(instances);
     		Classify.saveObject(annPredictor, ann_model_saved);
     	}
-    	DataReader hmmTrainDataReader = new DataReader("hmm_letter_training_data");
+    	DataReader hmmTrainDataReader = new DataReader(hmm_letter_training_data);
     	List<Instance> letterInstances = hmmTrainDataReader.read();
     	HMMPredictor hmmPredictor = new HMMPredictor(annPredictor, train_corpus);
     	hmmPredictor.train(letterInstances);
@@ -111,19 +111,22 @@ public class Classify
     	// Test the models
     	RandomWordGenerator smallGenerator = new RandomWordGenerator(2, 4, test_corpus, test_letter_directory);
     	AccuracyEvaluator smallEvaluator = new AccuracyEvaluator(annPredictor, hmmPredictor);
-    	for (int i = 0; i < smallGenerator.getWordCount() / 2.0; ++i) {
+    	//for (int i = 0; i < smallGenerator.getWordCount() / 2.0; ++i) {
+    	for (int i = 0; i < 10; ++i) {
     		smallEvaluator.evaluateWord(smallGenerator.randomWord());
     	}
     	
     	RandomWordGenerator mediumGenerator = new RandomWordGenerator(5, 8, test_corpus, test_letter_directory);
     	AccuracyEvaluator mediumEvaluator = new AccuracyEvaluator(annPredictor, hmmPredictor);
-    	for (int i = 0; i < mediumGenerator.getWordCount() / 2.0; ++i) {
+    	//for (int i = 0; i < mediumGenerator.getWordCount() / 2.0; ++i) {
+    	for (int i = 0; i < 10; ++i) {
     		mediumEvaluator.evaluateWord(mediumGenerator.randomWord());
     	}
     	
     	RandomWordGenerator largeGenerator = new RandomWordGenerator(9, Integer.MAX_VALUE, test_corpus, test_letter_directory);
     	AccuracyEvaluator largeEvaluator = new AccuracyEvaluator(annPredictor, hmmPredictor);
-    	for (int i = 0; i < largeGenerator.getWordCount() / 2.0; ++i) {
+    	//for (int i = 0; i < largeGenerator.getWordCount() / 2.0; ++i) {
+    	for (int i = 0; i < 10; ++i) {	
     		largeEvaluator.evaluateWord(largeGenerator.randomWord());
     	}
     	
@@ -206,7 +209,8 @@ public class Classify
         //Classify.registerOption("mode", "String", true, "Operating mode: train or test.");
         //Classify.registerOption("data", "String", true, "The path to the data file.");
         //Classify.registerOption("algorithm", "String", true, "The algorithm to use.");
-        Classify.registerOption("ann_model", "String", true, "The path to the model file.");
+        Classify.registerOption("ann_model_input", "String", true, "The path to the model file.");
+        Classify.registerOption("ann_model_saved", "String", true, "The path to save the ann model to.");
         //Classify.registerOption("test_method", "String", true, "The accuracy evaluation metric.");
         //Classify.registerOption("word_file", "String", true, "The file of words to test.");
         Classify.registerOption("ann_training_data", "String", true, "The location of the training letters for the ANN.");
