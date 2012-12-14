@@ -6,26 +6,38 @@ public class EmissionProbabilities {
 
     private HashMap<Character, Integer> emissionCounts;
     private HashMap<Character, Double> emissionProbs;
-    Character observed;
-    private double totalPairs;
+    Character actual;
+    private double totalObservations;
 
     public EmissionProbabilities(Character c) {
         emissionCounts = new HashMap<Character, Integer>();
         emissionProbs = new HashMap<Character, Double>();
-        totalPairs = 0;
-        observed = c;
+        totalObservations = 0;
+        if (c < 'a' || c > 'z') {
+    		throw new IllegalArgumentException("Constructed with illegal hidden character: " + c);
+    	}
+        actual = c;
+        
+        // Add smoothing
+        for (int i = 'a'; i <= 'z'; ++i) {
+        	emissionCounts.put((char) i, 1);
+        	++totalObservations;
+        }
     }
 
-    public double getTotalPairs() { return totalPairs; }
+    public double getTotalObservations() { return totalObservations; }
 
-    public void addObservation(char actual){
-        //LatentObservedPair pair = new LatentObservedPair(observed, actual);
-        Integer prob = emissionCounts.get(actual);
+    public void addObservation(char observed) {
+    	if (observed < 'a' || observed > 'z') {
+    		throw new IllegalArgumentException("Added illegal observation: " + observed);
+    	}
+        Integer prob = emissionCounts.get(observed);
+        
         if (prob == null) {
-            prob = new Integer(0);
+            throw new IllegalStateException("Bad smoothing in emission probability");
         }
-        emissionCounts.put(actual, prob + 1);
-        totalPairs += 1;
+        emissionCounts.put(observed, prob + 1);
+        totalObservations += 1;
     }
 
     // Really these are log probabilities
@@ -33,18 +45,17 @@ public class EmissionProbabilities {
         emissionProbs.clear();
         for (Character c : emissionCounts.keySet()) {
             Double count = new Double(emissionCounts.get(c));
-            Double logProb = Math.log(count / totalPairs);
+            Double logProb = Math.log(count / totalObservations);
             emissionProbs.put(c, logProb);
         }
     }
 
-    public Double getProbability(char actual) {
-    	Double p = emissionProbs.get(actual);
+    public Double getProbability(char observed) {
+    	Double p = emissionProbs.get(observed);
     	if (p == null) {
-    		return 0.0;
-    	} else {
-    		return p;
+    		throw new IllegalStateException("Found a null probability. actual: " + actual + " observed: " + observed);
     	}
+    	return p;
     }
     
     public static void main(String[] args) {

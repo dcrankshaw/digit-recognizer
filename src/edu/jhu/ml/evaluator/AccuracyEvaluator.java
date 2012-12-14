@@ -72,6 +72,9 @@ public class AccuracyEvaluator
 		System.out.println("actual: " + word + " hmm: " + hmmPrediction + " ann: " + annPrediction);
 		totalLettersEvaluated += word.length();
 		++totalWordsEvaluated;
+		if (hmmPrediction.length() != word.length() || annPrediction.length() != word.length()) {
+			System.out.println("uh oh");
+		}
 		int annCharsCorrect = 0;
 		int hmmCharsCorrect = 0;
 		for (int i = 0; i < word.length(); ++i) {
