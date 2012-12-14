@@ -2,10 +2,12 @@ package edu.jhu.ml;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -42,7 +44,7 @@ public class Classify
     public static String ann_model_input = null;
     public static String ann_training_data = "data/all/nnTrain.txt";
     public static String hmm_letter_training_data = "data/all/hmmTrain.txt";
-    public static String train_corpus = "data/corpus/train_corpus.txt";
+    //public static String train_corpus = "data/corpus/train_corpus.txt";
     public static String test_corpus = "data/corpus/test_corpus.txt";
     public static String test_letter_directory = "data/letters/";
     public static String output_directory = "data/output/";
@@ -50,7 +52,7 @@ public class Classify
 
     
     
-    public static void main(String[] args) throws FileNotFoundException
+    public static void main(String[] args) throws IOException
     {
         /*
         "ann_training_data", "String", true, "The location of the training letters for the ANN.");
@@ -75,9 +77,9 @@ public class Classify
     	if (CommandLineUtilities.hasArg("hmm_letter_training_data")) {
     		hmm_letter_training_data = CommandLineUtilities.getOptionValue("hmm_letter_training_data");
     	}
-    	if (CommandLineUtilities.hasArg("train_corpus")) {
-    		train_corpus = CommandLineUtilities.getOptionValue("train_corpus");
-    	}
+//    	if (CommandLineUtilities.hasArg("train_corpus")) {
+//    		train_corpus = CommandLineUtilities.getOptionValue("train_corpus");
+//    	}
     	if (CommandLineUtilities.hasArg("test_corpus")) {
     		test_corpus = CommandLineUtilities.getOptionValue("test_corpus");
     	}
@@ -103,101 +105,84 @@ public class Classify
     		annPredictor.train(instances);
     		Classify.saveObject(annPredictor, ann_model_saved);
     	}
+    	
+    	String corpusBase = "data/corpus/train_corpus_";
+    	String outputBase = "data/output/results_corpus_";
+    	String suffix = ".txt";
+    	for (int i = 1; i <= 8; i *= 2) {
+    		hmmTests(corpusBase + i + suffix, annPredictor, outputBase + i + suffix);
+    	}
+    }
+    
+    public static void hmmTests(String trainCorpus, NeuralNetwork annPredictor, String output) throws IOException {
     	DataReader hmmTrainDataReader = new DataReader(hmm_letter_training_data);
     	List<Instance> letterInstances = hmmTrainDataReader.read();
-    	HMMPredictor hmmPredictor = new HMMPredictor(annPredictor, train_corpus);
+    	HMMPredictor hmmPredictor = new HMMPredictor(annPredictor, trainCorpus);
     	hmmPredictor.train(letterInstances);
     	
     	// Test the models
     	RandomWordGenerator smallGenerator = new RandomWordGenerator(2, 4, test_corpus, test_letter_directory);
     	AccuracyEvaluator smallEvaluator = new AccuracyEvaluator(annPredictor, hmmPredictor);
-    	//for (int i = 0; i < smallGenerator.getWordCount() / 2.0; ++i) {
-    	for (int i = 0; i < 10; ++i) {
+    	double percentageOfTestCorpus = .1;
+    	System.out.println("Testing small words");
+    	for (int i = 0; i < smallGenerator.getWordCount() * percentageOfTestCorpus; ++i) {
+    	//for (int i = 0; i < 10; ++i) {
     		smallEvaluator.evaluateWord(smallGenerator.randomWord());
+    		if (i % 500 == 0) {
+    			System.out.println("Completed " + i +  " out of " + (smallGenerator.getWordCount() * percentageOfTestCorpus) + " predictions");
+    		}
     	}
     	
     	RandomWordGenerator mediumGenerator = new RandomWordGenerator(5, 8, test_corpus, test_letter_directory);
     	AccuracyEvaluator mediumEvaluator = new AccuracyEvaluator(annPredictor, hmmPredictor);
-    	//for (int i = 0; i < mediumGenerator.getWordCount() / 2.0; ++i) {
-    	for (int i = 0; i < 10; ++i) {
+    	System.out.println("Testing medium words");
+    	for (int i = 0; i < mediumGenerator.getWordCount() * percentageOfTestCorpus; ++i) {
+    	//for (int i = 0; i < 10; ++i) {
     		mediumEvaluator.evaluateWord(mediumGenerator.randomWord());
+    		if (i % 500 == 0) {
+    			System.out.println("Completed " + i +  " out of " + (mediumGenerator.getWordCount() * percentageOfTestCorpus) + " predictions");
+    		}
     	}
     	
     	RandomWordGenerator largeGenerator = new RandomWordGenerator(9, Integer.MAX_VALUE, test_corpus, test_letter_directory);
     	AccuracyEvaluator largeEvaluator = new AccuracyEvaluator(annPredictor, hmmPredictor);
-    	//for (int i = 0; i < largeGenerator.getWordCount() / 2.0; ++i) {
-    	for (int i = 0; i < 10; ++i) {	
+    	System.out.println("Testing large words");
+    	for (int i = 0; i < largeGenerator.getWordCount() * percentageOfTestCorpus; ++i) {
+    	//for (int i = 0; i < 10; ++i) {	
     		largeEvaluator.evaluateWord(largeGenerator.randomWord());
+    		if (i % 500 == 0) {
+    			System.out.println("Completed " + i +  " out of " + (largeGenerator.getWordCount() * percentageOfTestCorpus) + " predictions");
+    		}
     	}
     	
-    	System.out.println("ANN Results");
-    	System.out.println("Small word correctness: " + smallEvaluator.annWordCorrectness / smallEvaluator.totalWordsEvaluated);
-    	System.out.println("Small words correct: " + smallEvaluator.annWordsCorrect + "/" + smallEvaluator.totalWordsEvaluated);
-    	System.out.println("Small letters correct: " + smallEvaluator.annLettersCorrect + "/" + smallEvaluator.totalLettersEvaluated + "\n");
-    	System.out.println("Medium word correctness: " + mediumEvaluator.annWordCorrectness / mediumEvaluator.totalWordsEvaluated);
-    	System.out.println("Medium words correct: " + mediumEvaluator.annWordsCorrect + "/" + mediumEvaluator.totalWordsEvaluated);
-    	System.out.println("Medium letters correct: " + mediumEvaluator.annLettersCorrect + "/" + mediumEvaluator.totalLettersEvaluated + "\n");
-    	System.out.println("Large word correctness: " + largeEvaluator.annWordCorrectness / largeEvaluator.totalWordsEvaluated);
-    	System.out.println("Large words correct: " + largeEvaluator.annWordsCorrect + "/" + largeEvaluator.totalWordsEvaluated);
-    	System.out.println("Large letters correct: " + largeEvaluator.annLettersCorrect + "/" + largeEvaluator.totalLettersEvaluated + "\n");
+    	FileWriter results = new FileWriter(output);
+    	BufferedWriter resultsWriter = new BufferedWriter(results);
     	
-    	System.out.println("\n\nHMM Results");
-    	System.out.println("Small word correctness: " + smallEvaluator.hmmWordCorrectness / smallEvaluator.totalWordsEvaluated);
-    	System.out.println("Small words correct: " + smallEvaluator.hmmWordsCorrect + "/" + smallEvaluator.totalWordsEvaluated);
-    	System.out.println("Small letters correct: " + smallEvaluator.hmmLettersCorrect + "/" + smallEvaluator.totalLettersEvaluated + "\n");
-    	System.out.println("Medium word correctness: " + mediumEvaluator.hmmWordCorrectness / mediumEvaluator.totalWordsEvaluated);
-    	System.out.println("Medium words correct: " + mediumEvaluator.hmmWordsCorrect + "/" + mediumEvaluator.totalWordsEvaluated);
-    	System.out.println("Medium letters correct: " + mediumEvaluator.hmmLettersCorrect + "/" + mediumEvaluator.totalLettersEvaluated + "\n");
-    	System.out.println("Large word correctness: " + largeEvaluator.hmmWordCorrectness / largeEvaluator.totalWordsEvaluated);
-    	System.out.println("Large words correct: " + largeEvaluator.hmmWordsCorrect + "/" + largeEvaluator.totalWordsEvaluated);
-    	System.out.println("Large letters correct: " + largeEvaluator.hmmLettersCorrect + "/" + largeEvaluator.totalLettersEvaluated + "\n");
+    	resultsWriter.write(trainCorpus + " results");
     	
+    	resultsWriter.write("ANN Results");
+    	resultsWriter.write("Small word correctness: " + (smallEvaluator.annWordCorrectness / smallEvaluator.totalWordsEvaluated) + "\n");
+    	resultsWriter.write("Small words correct: " + smallEvaluator.annWordsCorrect + "/" + smallEvaluator.totalWordsEvaluated + "\n");
+    	resultsWriter.write("Small letters correct: " + smallEvaluator.annLettersCorrect + "/" + smallEvaluator.totalLettersEvaluated + " " + (smallEvaluator.annLettersCorrect / smallEvaluator.totalLettersEvaluated) + "\n\n");
+    	resultsWriter.write("Medium word correctness: " + mediumEvaluator.annWordCorrectness / mediumEvaluator.totalWordsEvaluated + "\n");
+    	resultsWriter.write("Medium words correct: " + mediumEvaluator.annWordsCorrect + "/" + mediumEvaluator.totalWordsEvaluated + "\n");
+    	resultsWriter.write("Medium letters correct: " + mediumEvaluator.annLettersCorrect + "/" + mediumEvaluator.totalLettersEvaluated + " " + (mediumEvaluator.annLettersCorrect / mediumEvaluator.totalLettersEvaluated) + "\n\n");
+    	resultsWriter.write("Large word correctness: " + largeEvaluator.annWordCorrectness / largeEvaluator.totalWordsEvaluated + "\n");
+    	resultsWriter.write("Large words correct: " + largeEvaluator.annWordsCorrect + "/" + largeEvaluator.totalWordsEvaluated + "\n");
+    	resultsWriter.write("Large letters correct: " + largeEvaluator.annLettersCorrect + "/" + largeEvaluator.totalLettersEvaluated + " " + (largeEvaluator.annLettersCorrect / largeEvaluator.totalLettersEvaluated) + "\n\n");
     	
-    	
-    	
-    	
-    	
-    	
-    	
-    	
-//
-//        String mode = CommandLineUtilities.getOptionValue("mode");
-//        String algorithm = CommandLineUtilities.getOptionValue("algorithm");
-//        String data = CommandLineUtilities.getOptionValue("data");
-//        String model = CommandLineUtilities.getOptionValue("model");
-//
-//        String testMethod = "letter_accuracy";
-//        if (CommandLineUtilities.hasArg("test_method"))
-//            testMethod = CommandLineUtilities.getOptionValue("test_method");
-//
-//        DataReader reader = new DataReader(data);
-//        List<Instance> instances = reader.read();
-//
-//        System.out.println("Read in data");
-//
-//        if (mode.equals("train"))
-//        {
-//            Predictor predictor = null;
-//
-//            if (algorithm.equals("neural_network"))
-//                predictor = new NeuralNetwork(50, 50);
-//
-//            predictor.train(instances);
-//            Classify.saveObject(predictor, model);
-//        }
-//        else if (mode.equals("test"))
-//        {			
-//            Predictor predictor = (Predictor) Classify.loadObject(model);
-//
-//            AccuracyEvaluator evaluator = null;
-//            if (algorithm.equals("neural_network"))
-//                evaluator = new AccuracyEvaluator(predictor);
-//
-//            if (testMethod.equals("letter_accuracy") || testMethod.equals("all"))
-//                System.out.println("Letter accuracy: " + evaluator.evaluateLetterAccuracy(instances, 1));
-//            if (testMethod.equals("whole_word_accuracy") || testMethod.equals("all"))
-//                System.out.println("Whole word accuracy: " + evaluator.evaluateWholeWordAccuracy(CommandLineUtilities.getOptionValue("word_file")));
-//        }
+    	resultsWriter.write("\n\nHMM Results");
+    	resultsWriter.write("Small word correctness: " + smallEvaluator.hmmWordCorrectness / smallEvaluator.totalWordsEvaluated + "\n");
+    	resultsWriter.write("Small words correct: " + smallEvaluator.hmmWordsCorrect + "/" + smallEvaluator.totalWordsEvaluated + "\n");
+    	resultsWriter.write("Small letters correct: " + smallEvaluator.hmmLettersCorrect + "/" + smallEvaluator.totalLettersEvaluated + " " + (smallEvaluator.hmmLettersCorrect / smallEvaluator.totalLettersEvaluated) + "\n\n");
+    	resultsWriter.write("Medium word correctness: " + mediumEvaluator.hmmWordCorrectness / mediumEvaluator.totalWordsEvaluated + "\n");
+    	resultsWriter.write("Medium words correct: " + mediumEvaluator.hmmWordsCorrect + "/" + mediumEvaluator.totalWordsEvaluated + "\n");
+    	resultsWriter.write("Medium letters correct: " + mediumEvaluator.hmmLettersCorrect + "/" + mediumEvaluator.totalLettersEvaluated + " " + (mediumEvaluator.hmmLettersCorrect / mediumEvaluator.totalLettersEvaluated) + "\n\n");
+    	resultsWriter.write("Large word correctness: " + largeEvaluator.hmmWordCorrectness / largeEvaluator.totalWordsEvaluated + "\n");
+    	resultsWriter.write("Large words correct: " + largeEvaluator.hmmWordsCorrect + "/" + largeEvaluator.totalWordsEvaluated + "\n");
+    	resultsWriter.write("Large letters correct: " + largeEvaluator.hmmLettersCorrect + "/" + largeEvaluator.totalLettersEvaluated + " " + (largeEvaluator.hmmLettersCorrect / largeEvaluator.totalLettersEvaluated) + "\n\n");
+  
+    	resultsWriter.close();
     }
     
 

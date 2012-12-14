@@ -112,7 +112,7 @@ public class NeuralNetwork extends Predictor
 		double lastCost = Double.MAX_VALUE;
 		double thisCost = this.calculateCost(instances);
 		double difference = thisCost - lastCost;
-		
+		int counter = 0;
 		do
 		{
 			this.backPropagation(instances);
@@ -121,11 +121,11 @@ public class NeuralNetwork extends Predictor
 			difference = thisCost - lastCost;
 			lastCost = thisCost;
 			
-//			System.out.println("iteration: " + counter++);
-//			System.out.println("cost: " + lastCost);
-//			System.out.println("difference: " + difference);
-//			System.out.println("learing rate: " + learningRate);
-//			System.out.println();
+			System.out.println("iteration: " + counter++);
+			System.out.println("cost: " + lastCost);
+			System.out.println("difference: " + difference);
+			System.out.println("learing rate: " + learningRate);
+			System.out.println();
 			
 			
 			this.firstWeights = this.firstWeights.plus(this.firstGradient.times(learningRate));

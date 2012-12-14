@@ -29,17 +29,17 @@ public class AccuracyEvaluator
 	
 	private HMMPredictor hmmPredictor;
 	
-	public int totalLettersEvaluated;
+	public double totalLettersEvaluated;
 	
-	public int totalWordsEvaluated;
+	public double totalWordsEvaluated;
 	
-	public int annLettersCorrect;
+	public double annLettersCorrect;
 	
-	public int hmmLettersCorrect;
+	public double hmmLettersCorrect;
 	
-	public int annWordsCorrect;
+	public double annWordsCorrect;
 	
-	public int hmmWordsCorrect;
+	public double hmmWordsCorrect;
 	
 	public double annWordCorrectness;
 	
@@ -69,7 +69,7 @@ public class AccuracyEvaluator
 			annPartialPrediction.append(annPredictor.predictCharacter(i));
 		}
 		String annPrediction = annPartialPrediction.toString();
-		System.out.println("actual: " + word + " hmm: " + hmmPrediction + " ann: " + annPrediction);
+		//System.out.println("actual: " + word + " hmm: " + hmmPrediction + " ann: " + annPrediction);
 		totalLettersEvaluated += word.length();
 		++totalWordsEvaluated;
 		if (hmmPrediction.length() != word.length() || annPrediction.length() != word.length()) {

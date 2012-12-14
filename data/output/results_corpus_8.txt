@@ -1,0 +1,26 @@
+data/corpus/train_corpus_8.txt resultsANN ResultsSmall word correctness: 0.4990374958152006
+Small words correct: 673.0/5974.0
+Small letters correct: 9050.0/18308.0 0.4943194232029714
+
+Medium word correctness: 0.5241289838770171
+Medium words correct: 61.0/3175.0
+Medium letters correct: 10278.0/19480.0 0.5276180698151951
+
+Large word correctness: 0.573680455533513
+Large words correct: 4.0/759.0
+Large letters correct: 4442.0/7749.0 0.5732352561620855
+
+
+
+HMM ResultsSmall word correctness: 0.6176068519138462
+Small words correct: 2072.0/5974.0
+Small letters correct: 11153.0/18308.0 0.6091872405505789
+
+Medium word correctness: 0.5206640419947498
+Medium words correct: 178.0/3175.0
+Medium letters correct: 10115.0/19480.0 0.5192505133470225
+
+Large word correctness: 0.5255709393468055
+Large words correct: 6.0/759.0
+Large letters correct: 4067.0/7749.0 0.5248419150858176
+
