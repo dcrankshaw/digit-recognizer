@@ -76,9 +76,9 @@ public class NeuralNetwork extends Predictor
 	 */
 	private Matrix secondGradient;
 
-	public NeuralNetwork(int size)
+	public NeuralNetwork()
 	{
-		NeuralNetwork.HIDDEN_SIZE = size + 1;
+		//NeuralNetwork.HIDDEN_SIZE = size + 1;
 		
 		Random random = new Random(); //4
 
@@ -442,6 +442,24 @@ public class NeuralNetwork extends Predictor
 
 		return new ClassificationLabel(label);
 	}
+	
+	public Character predictCharacter(Instance instance)
+	{
+		double[] probabilities = this.predictProbabilities(instance);
+
+		double max = -1;
+		int label = -1;
+		for (int i = 0; i < probabilities.length; i++)
+		{
+			if (probabilities[i] > max)
+			{
+				max = probabilities[i];
+				label = i;
+			}
+		}
+
+		return (char) ('a' + label);
+	}
 
 	/**
 	 * Gets the likelihood that an Instance is a specific letter.
@@ -470,48 +488,48 @@ public class NeuralNetwork extends Predictor
 		return result;
 	}
 
-	public static void main(String[] args)
-	{
-		DataReader reader = new DataReader("data/all/nnTrain.txt");
-		List<Instance> instances = reader.read();
-		
-//		System.out.println("25:");
+//	public static void main(String[] args)
+//	{
+//		DataReader reader = new DataReader("data/all/nnTrain.txt");
+//		List<Instance> instances = reader.read();
+//		
+////		System.out.println("25:");
+////		for (int i = 0; i < 20; i++)
+////		{
+////			NeuralNetwork network = new NeuralNetwork(25);
+////			network.train(instances);
+////			AccuracyEvaluator evaluator = new AccuracyEvaluator(network);
+////			System.out.println(evaluator.evaluateLetterAccuracy(instances, 1));
+////		}		
+//		
+////		System.out.println("50:");
+////		for (int i = 0; i < 20; i++)
+////		{
+////			NeuralNetwork network = new NeuralNetwork(50);
+////			network.train(instances);
+////			AccuracyEvaluator evaluator = new AccuracyEvaluator(network);
+////			System.out.println(evaluator.evaluateLetterAccuracy(instances, 1));
+////		}	
+//		
+////		System.out.println("75:");
+////		for (int i = 0; i < 20; i++)
+////		{
+////			NeuralNetwork network = new NeuralNetwork(75);
+////			network.train(instances);
+////			AccuracyEvaluator evaluator = new AccuracyEvaluator(network);
+////			System.out.println(evaluator.evaluateLetterAccuracy(instances, 1));
+////		}	
+////		
+//		System.out.println("100:");
 //		for (int i = 0; i < 20; i++)
 //		{
-//			NeuralNetwork network = new NeuralNetwork(25);
-//			network.train(instances);
-//			AccuracyEvaluator evaluator = new AccuracyEvaluator(network);
-//			System.out.println(evaluator.evaluateLetterAccuracy(instances, 1));
-//		}		
-		
-//		System.out.println("50:");
-//		for (int i = 0; i < 20; i++)
-//		{
-//			NeuralNetwork network = new NeuralNetwork(50);
-//			network.train(instances);
-//			AccuracyEvaluator evaluator = new AccuracyEvaluator(network);
-//			System.out.println(evaluator.evaluateLetterAccuracy(instances, 1));
-//		}	
-		
-//		System.out.println("75:");
-//		for (int i = 0; i < 20; i++)
-//		{
-//			NeuralNetwork network = new NeuralNetwork(75);
+//			NeuralNetwork network = new NeuralNetwork(100);
 //			network.train(instances);
 //			AccuracyEvaluator evaluator = new AccuracyEvaluator(network);
 //			System.out.println(evaluator.evaluateLetterAccuracy(instances, 1));
 //		}	
 //		
-		System.out.println("100:");
-		for (int i = 0; i < 20; i++)
-		{
-			NeuralNetwork network = new NeuralNetwork(100);
-			network.train(instances);
-			AccuracyEvaluator evaluator = new AccuracyEvaluator(network);
-			System.out.println(evaluator.evaluateLetterAccuracy(instances, 1));
-		}	
-		
-		
-
-	}
+//		
+//
+//	}
 }

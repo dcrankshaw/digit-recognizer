@@ -99,7 +99,7 @@ public class Classify
     		// Train Neural Network and save
     		DataReader annTrainDataReader = new DataReader(ann_training_data);
     		List<Instance> instances = annTrainDataReader.read();
-    		annPredictor = new NeuralNetwork(50, 50);
+    		annPredictor = new NeuralNetwork();
     		annPredictor.train(instances);
     		Classify.saveObject(annPredictor, ann_model_saved);
     	}
