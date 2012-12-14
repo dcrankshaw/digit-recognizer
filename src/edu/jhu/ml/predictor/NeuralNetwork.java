@@ -522,7 +522,7 @@ public class NeuralNetwork extends Predictor
 	}
 	
 	
-	public static void main(String[] args)
+	/*public static void main(String[] args)
 	{
 		DataReader reader = new DataReader("data/all/nnTrain.txt");
 		List<Instance> instances = reader.read();
@@ -536,7 +536,7 @@ public class NeuralNetwork extends Predictor
 			network.train(instances);
 			System.out.println(evaluator.evaluateLetterAccuracy(instances, 1));
 		}
-	}
+	}*/
 	
 	public Character predictCharacter(Instance instance) {
     	double[] probabilities = this.predictProbabilities(instance);

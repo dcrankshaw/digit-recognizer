@@ -39,7 +39,45 @@ public class EmissionProbabilities {
     }
 
     public Double getProbability(char actual) {
-        return emissionProbs.get(actual);
+    	Double p = emissionProbs.get(actual);
+    	if (p == null) {
+    		return 0.0;
+    	} else {
+    		return p;
+    	}
+    }
+    
+    public static void main(String[] args) {
+    	EmissionProbabilities aprobs  = new EmissionProbabilities('a');
+    	EmissionProbabilities bprobs  = new EmissionProbabilities('b');
+    	aprobs.addObservation('a');
+    	aprobs.addObservation('a');
+    	aprobs.addObservation('a');
+    	aprobs.addObservation('a');
+    	aprobs.addObservation('x');
+    	aprobs.addObservation('x');
+    	aprobs.addObservation('x');
+    	aprobs.addObservation('x');
+    	aprobs.calculateProbabilities();
+    	
+    	bprobs.addObservation('b');
+    	bprobs.addObservation('b');
+    	bprobs.addObservation('b');
+    	bprobs.addObservation('b');
+    	bprobs.addObservation('b');
+    	bprobs.addObservation('b');
+    	bprobs.addObservation('x');
+    	bprobs.addObservation('x');
+    	bprobs.addObservation('x');
+    	bprobs.addObservation('x');
+    	bprobs.calculateProbabilities();
+    	System.out.println("P(a | a): " + aprobs.getProbability('a'));
+    	System.out.println("P(a | b): " + bprobs.getProbability('a'));
+    	System.out.println("P(x | a): " + aprobs.getProbability('x'));
+    	System.out.println("P(x | b): " + bprobs.getProbability('x'));
+    	System.out.println("P(b | a): " + aprobs.getProbability('b'));
+    	System.out.println("P(b | b): " + bprobs.getProbability('b'));
+    	
     }
 
     /*private final class LatentObservedPair {

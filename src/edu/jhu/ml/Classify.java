@@ -4,10 +4,12 @@ import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -15,6 +17,7 @@ import org.apache.commons.cli.Option;
 import org.apache.commons.cli.OptionBuilder;
 
 import edu.jhu.ml.data.Instance;
+import edu.jhu.ml.data.RandomWordGenerator;
 import edu.jhu.ml.evaluator.AccuracyEvaluator;
 import edu.jhu.ml.hmm.HMMPredictor;
 import edu.jhu.ml.predictor.NeuralNetwork;
@@ -47,7 +50,7 @@ public class Classify
 
     
     
-    public static void main(String[] args)
+    public static void main(String[] args) throws FileNotFoundException
     {
         /*
         "ann_training_data", "String", true, "The location of the training letters for the ANN.");
@@ -88,8 +91,7 @@ public class Classify
     		ann_model_saved = CommandLineUtilities.getOptionValue("ann_model_saved");
     	}
     	
-    	//Train the models
-    	
+    	// Train the models
     	NeuralNetwork annPredictor = null;
     	if (ann_model_input != null) {
     		annPredictor = (NeuralNetwork) Classify.loadObject(ann_model_input);
@@ -106,7 +108,46 @@ public class Classify
     	HMMPredictor hmmPredictor = new HMMPredictor(annPredictor, train_corpus);
     	hmmPredictor.train(letterInstances);
     	
-    	//Test the models
+    	// Test the models
+    	RandomWordGenerator smallGenerator = new RandomWordGenerator(2, 4, test_corpus, test_letter_directory);
+    	AccuracyEvaluator smallEvaluator = new AccuracyEvaluator(annPredictor, hmmPredictor);
+    	for (int i = 0; i < smallGenerator.getWordCount() / 2.0; ++i) {
+    		smallEvaluator.evaluateWord(smallGenerator.randomWord());
+    	}
+    	
+    	RandomWordGenerator mediumGenerator = new RandomWordGenerator(5, 8, test_corpus, test_letter_directory);
+    	AccuracyEvaluator mediumEvaluator = new AccuracyEvaluator(annPredictor, hmmPredictor);
+    	for (int i = 0; i < mediumGenerator.getWordCount() / 2.0; ++i) {
+    		mediumEvaluator.evaluateWord(mediumGenerator.randomWord());
+    	}
+    	
+    	RandomWordGenerator largeGenerator = new RandomWordGenerator(9, Integer.MAX_VALUE, test_corpus, test_letter_directory);
+    	AccuracyEvaluator largeEvaluator = new AccuracyEvaluator(annPredictor, hmmPredictor);
+    	for (int i = 0; i < largeGenerator.getWordCount() / 2.0; ++i) {
+    		largeEvaluator.evaluateWord(largeGenerator.randomWord());
+    	}
+    	
+    	System.out.println("ANN Results");
+    	System.out.println("Small word correctness: " + smallEvaluator.annWordCorrectness / smallEvaluator.totalWordsEvaluated);
+    	System.out.println("Small words correct: " + smallEvaluator.annWordsCorrect + "/" + smallEvaluator.totalWordsEvaluated);
+    	System.out.println("Small letters correct: " + smallEvaluator.annLettersCorrect + "/" + smallEvaluator.totalLettersEvaluated + "\n");
+    	System.out.println("Medium word correctness: " + mediumEvaluator.annWordCorrectness / mediumEvaluator.totalWordsEvaluated);
+    	System.out.println("Medium words correct: " + mediumEvaluator.annWordsCorrect + "/" + mediumEvaluator.totalWordsEvaluated);
+    	System.out.println("Medium letters correct: " + mediumEvaluator.annLettersCorrect + "/" + mediumEvaluator.totalLettersEvaluated + "\n");
+    	System.out.println("Large word correctness: " + largeEvaluator.annWordCorrectness / largeEvaluator.totalWordsEvaluated);
+    	System.out.println("Large words correct: " + largeEvaluator.annWordsCorrect + "/" + largeEvaluator.totalWordsEvaluated);
+    	System.out.println("Large letters correct: " + largeEvaluator.annLettersCorrect + "/" + largeEvaluator.totalLettersEvaluated + "\n");
+    	
+    	System.out.println("\n\nHMM Results");
+    	System.out.println("Small word correctness: " + smallEvaluator.hmmWordCorrectness / smallEvaluator.totalWordsEvaluated);
+    	System.out.println("Small words correct: " + smallEvaluator.hmmWordsCorrect + "/" + smallEvaluator.totalWordsEvaluated);
+    	System.out.println("Small letters correct: " + smallEvaluator.hmmLettersCorrect + "/" + smallEvaluator.totalLettersEvaluated + "\n");
+    	System.out.println("Medium word correctness: " + mediumEvaluator.hmmWordCorrectness / mediumEvaluator.totalWordsEvaluated);
+    	System.out.println("Medium words correct: " + mediumEvaluator.hmmWordsCorrect + "/" + mediumEvaluator.totalWordsEvaluated);
+    	System.out.println("Medium letters correct: " + mediumEvaluator.hmmLettersCorrect + "/" + mediumEvaluator.totalLettersEvaluated + "\n");
+    	System.out.println("Large word correctness: " + largeEvaluator.hmmWordCorrectness / largeEvaluator.totalWordsEvaluated);
+    	System.out.println("Large words correct: " + largeEvaluator.hmmWordsCorrect + "/" + largeEvaluator.totalWordsEvaluated);
+    	System.out.println("Large letters correct: " + largeEvaluator.hmmLettersCorrect + "/" + largeEvaluator.totalLettersEvaluated + "\n");
     	
     	
     	
@@ -116,45 +157,46 @@ public class Classify
     	
     	
     	
-
-        String mode = CommandLineUtilities.getOptionValue("mode");
-        String algorithm = CommandLineUtilities.getOptionValue("algorithm");
-        String data = CommandLineUtilities.getOptionValue("data");
-        String model = CommandLineUtilities.getOptionValue("model");
-
-        String testMethod = "letter_accuracy";
-        if (CommandLineUtilities.hasArg("test_method"))
-            testMethod = CommandLineUtilities.getOptionValue("test_method");
-
-        DataReader reader = new DataReader(data);
-        List<Instance> instances = reader.read();
-
-        System.out.println("Read in data");
-
-        if (mode.equals("train"))
-        {
-            Predictor predictor = null;
-
-            if (algorithm.equals("neural_network"))
-                predictor = new NeuralNetwork(50, 50);
-
-            predictor.train(instances);
-            Classify.saveObject(predictor, model);
-        }
-        else if (mode.equals("test"))
-        {			
-            Predictor predictor = (Predictor) Classify.loadObject(model);
-
-            AccuracyEvaluator evaluator = null;
-            if (algorithm.equals("neural_network"))
-                evaluator = new AccuracyEvaluator(predictor);
-
-            if (testMethod.equals("letter_accuracy") || testMethod.equals("all"))
-                System.out.println("Letter accuracy: " + evaluator.evaluateLetterAccuracy(instances, 1));
-            if (testMethod.equals("whole_word_accuracy") || testMethod.equals("all"))
-                System.out.println("Whole word accuracy: " + evaluator.evaluateWholeWordAccuracy(CommandLineUtilities.getOptionValue("word_file")));
-        }
+//
+//        String mode = CommandLineUtilities.getOptionValue("mode");
+//        String algorithm = CommandLineUtilities.getOptionValue("algorithm");
+//        String data = CommandLineUtilities.getOptionValue("data");
+//        String model = CommandLineUtilities.getOptionValue("model");
+//
+//        String testMethod = "letter_accuracy";
+//        if (CommandLineUtilities.hasArg("test_method"))
+//            testMethod = CommandLineUtilities.getOptionValue("test_method");
+//
+//        DataReader reader = new DataReader(data);
+//        List<Instance> instances = reader.read();
+//
+//        System.out.println("Read in data");
+//
+//        if (mode.equals("train"))
+//        {
+//            Predictor predictor = null;
+//
+//            if (algorithm.equals("neural_network"))
+//                predictor = new NeuralNetwork(50, 50);
+//
+//            predictor.train(instances);
+//            Classify.saveObject(predictor, model);
+//        }
+//        else if (mode.equals("test"))
+//        {			
+//            Predictor predictor = (Predictor) Classify.loadObject(model);
+//
+//            AccuracyEvaluator evaluator = null;
+//            if (algorithm.equals("neural_network"))
+//                evaluator = new AccuracyEvaluator(predictor);
+//
+//            if (testMethod.equals("letter_accuracy") || testMethod.equals("all"))
+//                System.out.println("Letter accuracy: " + evaluator.evaluateLetterAccuracy(instances, 1));
+//            if (testMethod.equals("whole_word_accuracy") || testMethod.equals("all"))
+//                System.out.println("Whole word accuracy: " + evaluator.evaluateWholeWordAccuracy(CommandLineUtilities.getOptionValue("word_file")));
+//        }
     }
+    
 
     /**
      * Adds all of the possible command line arguments.

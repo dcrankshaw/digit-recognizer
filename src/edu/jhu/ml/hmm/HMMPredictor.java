@@ -41,6 +41,8 @@ public class HMMPredictor {
     // of actual label given what the ANN predicted, a perhaps better model
     // for the ANN. We would also learn P(x) - the probability of seeing the
     // letter that the ANN predicted (which would be learned from the corpus).
+    
+    // We actually use Bayes Theorem right now
     private void learnEmissionProbabilities(List<Instance> letterInstances) {
         for(Instance instance: letterInstances) {
             Character observed = letterPredictor.predictCharacter(instance);

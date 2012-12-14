@@ -27,13 +27,13 @@ public class InteractiveClassify
 	public static void main(String[] args) throws IOException
 	{
 		Scanner scanner = new Scanner(System.in);
-		
+		RandomWordGenerator generator = new RandomWordGenerator(0, 100, "/data/corpus/test_corpus.txt", "/data/letters/");
 		System.out.println("Enter a word to test:");
 		while (scanner.hasNext())
 		{
 			String input = scanner.nextLine();
 			
-			List<Instance> word = RandomWordGenerator.generateWord(input);
+			List<Instance> word = generator.generateWord(input);
 			InteractiveClassify.displayWord(word);
 		}
 	}
