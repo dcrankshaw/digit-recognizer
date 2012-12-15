@@ -5,6 +5,7 @@
 \usepackage{amssymb}
 \usepackage{hyperref}
 \usepackage{graphicx}
+\usepackage{tikz}
 \usepackage[justification=centering]{caption}
 \usepackage{subcaption}
 \usepackage[left=1in,right=1in,top=1in,bottom=1in]{geometry}
@@ -26,8 +27,6 @@ Feng et al.\cite{feng2008hidden} explores this idea of combining classification 
 
 Although the approach they take is more complicated, including the use of an emsemble of HMMs and many more features, their success indicates that the combination of classification with an HMM is a viable approach for the handwriting recognition problem.
 
-
-
 \section{The Algorithms and Data}
 
 \subsection*{Data}
@@ -46,6 +45,48 @@ The data can often be difficult to read for a human. Figure 1 demonstrates this 
 \subsection*{The Algorithms}
 
 The two algorithms that we intend to use to accomplish the character recognition goal are an artificial neural network (ANN) and a hidden markov model (HMM). The idea is to compare the accuracy of the ANN to a combination of both the ANN and HMM to see if adding knowledge of word context to the model increases accuracy on the datasets.
+
+\subsubsection*{Neural Network Theory}
+
+The original idea behind the artifical neural network was to simulate connections between neurons in the brain. Each neuron receives a message, performs some type of computation, and sends a new message to the neurons to which it is connected. For the artificial neural network, the intial input is derived from the features of a data point. Based on this input, each neuron computes an activation function (typically the sigmoid function) to see if it should be on or off. The new values that are computed are multipled by a transition weight to the next layer of neurons. This process repeates until the output layer has been reached. The values of each output neuron represent a likelihood that the input data is of a specific class.
+
+In order to train the algorithm, the backpropagation algorithm assigns specific error values to each individual node, which creates the gradient function based on each of the parameters. With the gradient function, an optimization algorithm like gradient descent can be use to find an optimum value for each parameter. Neural networks are not convex, so there is no guarantee that the solution is the global optimum.
+
+\begin{figure}[h]
+\centering
+\caption{An example neural network}
+\begin{tikzpicture}
+
+\node (x1) at (0, 0) [draw,shape=circle]{};
+\node (x2) at (0, 1) [draw,shape=circle]{};
+\node (x3) at (0, 2) [draw,shape=circle]{};
+
+\node (x4) at (1, 1.5) [draw,shape=circle]{};
+\node (x5) at (1, 0.5) [draw,shape=circle]{};
+
+\node (x6) at (2, 1.5) [draw,shape=circle]{};
+\node (x7) at (2, 0.5) [draw,shape=circle]{};
+
+\draw [->] (x1) -- (x4);
+\draw [->] (x2) -- (x4);
+\draw [->] (x3) -- (x4);
+
+\draw [->] (x1) -- (x5);
+\draw [->] (x2) -- (x5);
+\draw [->] (x3) -- (x5);
+
+\draw [->] (x4) -- (x6);
+\draw [->] (x5) -- (x6);
+
+\draw [->] (x4) -- (x7);
+\draw [->] (x5) -- (x7);
+
+\end{tikzpicture}
+\end{figure}
+
+In Figure 2, each neuron is represented with a circle. Each weight parameter that is learned by the backpropagation algorithm is shown by a line that connects the neurons in each layer.
+
+\subsubsection*{Neural Network Implementation}
 
 The ANN will be trained on the pixel values for each letter image. Each training example is a 16 by 8 pixel image which amounts to an input size of 128. In order to help improve the accuracy of the classifier, we included a bias term on the input and hidden layers. Therefore, the input size for the ANN is 129 nodes.
 
@@ -80,6 +121,8 @@ One other idea that we tried was to add a second hidden layer to see if increasi
 
 Therefore, the neural network that we will use in our experiments in combination with and against the HMM will be a neural network with 128 input nodes, 25 hidden nodes, and 26 output nodes, not counting the bias units.
 
+Since it is possible to describe a neural network as a series of matrix multiplications, its implementation will involve some non-trivial linear algebra functions. In order to do this effectively in Java, we use the \href{http://math.nist.gov/javanumerics/jama/}{Java Matrix Package}.
+
 
 \section{Results}
 
@@ -110,11 +153,11 @@ In the following figures, we compare the two algorithms with each of the three a
 
 We hypothesized that increasing the size of the training corpus would increase the accuracy of the HMM because in order for the transmission probabilities to converge, we would need to look at a certain amount of data. However, there was no significant difference in the HMM accuracy as we changed the size of the training corpus. It is possible that even the smallest corpus was already large enough for the transmission probabilites to have converged at approximately 14,000 words.
 
-From Figures 3 and 5, it is evident that as the length of the word increases, the accuracy of the ANN-HMM combination decreases. We hypothesize that once the HMM begins to incorrectly identify a sequence, it tends to continue to do so because of the weight of the transmission probabilities on predicting the most probable sequence. In order to get a sequence back on the right track, we would need a high correct emission probability and a high probability of transitioning from the previous incorrect letter to the current correct letter, which effectively breaks the reasons behind using a HMM. Because we use the same ANN-HMM combination on our short and long word predictions, we assume the same probability of getting a starting down an incorrect subsequence at a given position in a word regardless of the length of the word. Because the longer words have more positions at which to start down a wrong sequence, and will tend to have more letters remaining in the word to be wrongly predicted once an incorrect subsequence is started down, longer words will tend to have more incorrect letters. *****However, this is still a hypothesis and we would need to run more experiments to verify this.
+From Figures 4 and 5, it is evident that as the length of the word increases, the accuracy of the ANN-HMM combination decreases. We hypothesize that once the HMM begins to incorrectly identify a sequence, it tends to continue to do so because of the weight of the transmission probabilities on predicting the most probable sequence. In order to get a sequence back on the right track, we would need a high correct emission probability and a high probability of transitioning from the previous incorrect letter to the current correct letter, which effectively breaks the reasons behind using a HMM. Because we use the same ANN-HMM combination on our short and long word predictions, we assume the same probability of getting a starting down an incorrect subsequence at a given position in a word regardless of the length of the word. Because the longer words have more positions at which to start down a wrong sequence, and will tend to have more letters remaining in the word to be wrongly predicted once an incorrect subsequence is started down, longer words will tend to have more incorrect letters. *****However, this is still a hypothesis and we would need to run more experiments to verify this.
 
 One interesting trend that we did not expect to see in the data is the slight increase in accuracy of the ANN on the data set as the word length increases. This was surprising because the ANN predicts each letter independently, so changing how the letters are grouped into words should not have affected the accuracy. One potential explanation is that the ANN is much better at classifying some letters than others. If the longer words tend to contain higher concentrations of those ``eaiser'' letters, then the ANN would have a higher accuracy on the larger word bucket. 
 
-In order to investigate this further, we looked at the accuracy of the ANN on each specific letter. As you can see from Figure 6, the results are highly variable, and there are even several letters that have 0\% accuracy.
+In order to investigate this further, we looked at the accuracy of the ANN on each specific letter. As you can see from Figure 7, the results are highly variable, and there are even several letters that have 0\% accuracy.
 
 \begin{figure}[h]
 \centering
