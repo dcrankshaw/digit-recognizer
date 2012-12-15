@@ -95,6 +95,15 @@ public class RandomWordGenerator
 		return null;
 	}
 	
+	public List<Instance> testLetterInstances(char letter) throws FileNotFoundException {
+		List<Instance> instances = new ArrayList<Instance>();
+		for (int i = 0; i < letterCounts[letter - 'a']; ++i) {
+			String line = readInstance(letter, i);
+			instances.add(RandomWordGenerator.createInstance(line));
+		}
+		return instances;
+	}
+	
 	/**
 	 * Generates the random letters from the word.
 	 * @param word The word.

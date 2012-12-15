@@ -106,6 +106,23 @@ public class Classify
     		Classify.saveObject(annPredictor, ann_model_saved);
     	}
     	
+    	
+    	/*RandomWordGenerator generator = new RandomWordGenerator(0, 100, test_corpus, test_letter_directory);
+
+    	for (char letter = 'a'; letter <= 'z'; ++letter) {
+    		List<Instance> testExamples = generator.testLetterInstances(letter);
+    		double numCorrect = 0;
+    		double numInstances = 0;
+    		for (Instance example : testExamples) {
+    			if (annPredictor.predictCharacter(example) == letter) {
+    				++numCorrect;
+    			}
+    			++numInstances;
+    		}
+    		System.out.println(letter + ":\t" + (numCorrect/numInstances));
+    	}*/
+    	
+    	
     	String corpusBase = "data/corpus/train_corpus_";
     	String outputBase = "data/output/results_corpus_";
     	String suffix = ".txt";
