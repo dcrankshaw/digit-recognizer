@@ -267,7 +267,7 @@ sequence, it tends to continue to do so because of the weight of the transmissio
 predicting the most probable sequence. In order to get a sequence back on the right track, we would
 need a high correct emission probability and a high probability of transitioning from the previous
 incorrect letter to the current correct letter, which effectively breaks the reasons behind using a
-HMM\. Because we use the same ANN-HMM combination on our short and long word predictions, we assume
+HMM. Because we use the same ANN-HMM combination on our short and long word predictions, we assume
 the same probability of getting a starting down an incorrect subsequence at a given position in a
 word regardless of the length of the word. Because the longer words have more positions at which to
 start down a wrong sequence, and will tend to have more letters remaining in the word to be wrongly
