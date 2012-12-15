@@ -219,6 +219,12 @@ the state $z_j$. We learn these probabilities
 ADD DISCUSSION OF THEORY BEHIND HMM
 ADD NOTE ABOUT LEARNING EMISSION PROBS BAYESIAN VS NON BAYESIAN
 
+\subsection*{Work Completed}
+In order to successfully implement the combined classifier, we separately created an ANN and an HMM to indepdently perform their tasks. The ANN was implemented with both a two- and three-layer network structure. We tried to find the optimal network structure to get the highest accuracy on the recognition of the letters because we knew that it would be extremely important for training the HMM. If the ANN was unsuccessful, then the HMM would not work as well. After running several tests, the three-layer neural network did not perform as well as the two-layer network. It is possible that this is due to the algorithm being slightly more complicated to implement. 
+
+Once we had an accurate two-layer network implementation working, we varied the hyperparameter which specificed the number of nodes in the hidden layer to see if it affected the accuracy, which was previously discussed. Since altering the size of the hidden layer did not significantly change the results, we hypothesized that even a working three-layer network would not help to improve the accuracy.
+
+DAN C. ENTER WHAT YOU DID FOR THE HMM.
 
 \section{Results}
 
@@ -298,6 +304,16 @@ tend to occur less often in English, and therefore we did not have as many train
 those letters. This does not prove that the longer words contain less of the harder letters, but it
 supports that it is a valid hypothesis. 
 
+Additionally, the accuracy of the neural network even on those examples where it performs well could still be improved. After analyzing the data a little bit more to investigate if the noise could be a problem, we hypothesize that there are a few reasons why the neural network has trouble learning to recognize each letter. 
+
+\begin{figure}[h]
+\centering
+\caption{Examples of the letters `a' and `e'}
+\includegraphics[scale=1.0]{img/aa.jpg}
+\includegraphics[scale=1.0]{img/ee.jpg}
+\end{figure}
+
+Neural networks can be very slow and difficult to train. Sometimes, they require a large amount of data in order to converge to a good solution, and it helps if the data is somewhat normal. Figure 8 demonstrates the variety that each letter contains. The letters can often be small or large, they can be located at the top of the image or the bottom, and even in some cases, the capital version of the letter is used. These variations within the data can pose a large problem for a neural network. It is asking a lot of the classifier to be able to identy the letter `a' anywhere in the image whether it is capital or not. 
 
 \section{Conclusion}
 
@@ -317,5 +333,12 @@ engineering.
 
 \bibliography{refs.bib}
 \bibliographystyle{plain}
+
+
+\newpage
+\appendix
+\section{First Appendix}
+
+TALK ABOUT THE INTERACTIVECLASSIFY.JAVA CLASS
 
 \end{document}
