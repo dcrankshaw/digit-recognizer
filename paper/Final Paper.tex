@@ -79,15 +79,19 @@ Therefore, the neural network that we will use in our experiments in combination
 
 \section{Results}
 
+In order to compare the implementation and accuracy of the ANN versus the HMM-ANN combination, we compared their performances with three different metrics: the percentage of letters correct, the percentage of fully correct words, and the average percentage of letters correct per word. 
+
+In the following figures, we compare the two algorithms with each of the three accuracy metrics. The neural network was not retrained between tests. Its results were used to calculate the emission probabilities for the HMM. The HMM, however, was retrained with four different subsets of the training corpus: the first 12.5\% of the corpus, the first 25\%, the first 50\%, and then all of the training data. Each algorithm was then tested on a random 10\% of the same test dataset, and the results were averaged. This process was repeated on three subsets of words: small (2-4 letters), medium (5-8 letters), and large (9+ letters) words.
+
 \begin{figure}[h]
 \centering
-\caption{Percentage of Letters Correct}
+\caption{Percentage of letters correct}
 \includegraphics[scale=0.55]{img/lettersCorrect.png}
 \end{figure}
 
 \begin{figure}[h]
 \centering
-\caption{Percentage of Total Words Correct}
+\caption{Percentage of fully correct words}
 \includegraphics[scale=0.55]{img/wordsCorrect.png}
 \end{figure}
 
@@ -97,7 +101,16 @@ Therefore, the neural network that we will use in our experiments in combination
 \includegraphics[scale=0.55]{img/wordCorrectness.png}
 \end{figure}
 
+
 \section{Analysis}
+
+We hypothesized that increasing the size of the training corpus would increase the accruacy of the HMM because in order for the transmission probabilities to converge, we would need to look at a certain amount of data. However, there was no significant difference in the HMM accuracy as we changed the size of the training corpus. It is possible that even the smallest corpus was already large enough for the transmission probabilites to have converged at approximately 14,000 words.
+
+From Figures 3 and 5, it is evident that as the length of the word increases, the accuracy of the ANN-HMM combination decreases. We hypothesize that once the HMM begins to incorrectly identify a sequence, it tends to continue to do so because of the weight of the transmission probabilities on predicting the most probable sequence. In order to get a sequence back on the right track, we would need a high correct emission probability and a high probability of transitioning from the previous incorrect letter to the current correct letter, which effectively breaks the reasons behind using a HMM. Because we use the same ANN-HMM combination on our short and long word predictions, we assume the same probability of getting a starting down an incorrect subsequence at a given position in a word regardless of the length of the word. Because the longer words have more positions at which to start down a wrong sequence, and will tend to have more letters remaining in the word to be wrongly predicted once an incorrect subsequence is started down, longer words will tend to have more incorrect letters. *****However, this is still a hypothesis and we would need to run more experiments to verify this.
+
+One interesting trend that we did not expect to see in the data is the slight increase in accuracy of the ANN on the data set as the word length increases. This was surprising because the ANN predcits each letter independently, so changing how the letters are grouped into words should not have affected the accuracy. One potential explanation is that the ANN is much better at classifying some letters than others. If the longer words tend to contain higher concentrations of those ``eaiser'' letters, then the ANN would have a higher accuracy on the larger word bucket. 
+
+
 
 \section{Conclusion}
 
