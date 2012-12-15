@@ -22,7 +22,8 @@ The idea behind our approach is to compare how well two algorithms perform in co
 
 \section{Related Work}
 
-\emph{Other Paper} \cite{feng2008hidden}
+Feng et al.\cite{feng2008hidden} explores this idea of combining classification with a sequence model in order to perform handwriting recognition on a large vocabulary corpus. 
+
 
 \section{The Algorithms and Data}
 
@@ -104,15 +105,31 @@ In the following figures, we compare the two algorithms with each of the three a
 
 \section{Analysis}
 
-We hypothesized that increasing the size of the training corpus would increase the accruacy of the HMM because in order for the transmission probabilities to converge, we would need to look at a certain amount of data. However, there was no significant difference in the HMM accuracy as we changed the size of the training corpus. It is possible that even the smallest corpus was already large enough for the transmission probabilites to have converged at approximately 14,000 words.
+We hypothesized that increasing the size of the training corpus would increase the accuracy of the HMM because in order for the transmission probabilities to converge, we would need to look at a certain amount of data. However, there was no significant difference in the HMM accuracy as we changed the size of the training corpus. It is possible that even the smallest corpus was already large enough for the transmission probabilites to have converged at approximately 14,000 words.
 
 From Figures 3 and 5, it is evident that as the length of the word increases, the accuracy of the ANN-HMM combination decreases. We hypothesize that once the HMM begins to incorrectly identify a sequence, it tends to continue to do so because of the weight of the transmission probabilities on predicting the most probable sequence. In order to get a sequence back on the right track, we would need a high correct emission probability and a high probability of transitioning from the previous incorrect letter to the current correct letter, which effectively breaks the reasons behind using a HMM. Because we use the same ANN-HMM combination on our short and long word predictions, we assume the same probability of getting a starting down an incorrect subsequence at a given position in a word regardless of the length of the word. Because the longer words have more positions at which to start down a wrong sequence, and will tend to have more letters remaining in the word to be wrongly predicted once an incorrect subsequence is started down, longer words will tend to have more incorrect letters. *****However, this is still a hypothesis and we would need to run more experiments to verify this.
 
-One interesting trend that we did not expect to see in the data is the slight increase in accuracy of the ANN on the data set as the word length increases. This was surprising because the ANN predcits each letter independently, so changing how the letters are grouped into words should not have affected the accuracy. One potential explanation is that the ANN is much better at classifying some letters than others. If the longer words tend to contain higher concentrations of those ``eaiser'' letters, then the ANN would have a higher accuracy on the larger word bucket. 
+One interesting trend that we did not expect to see in the data is the slight increase in accuracy of the ANN on the data set as the word length increases. This was surprising because the ANN predicts each letter independently, so changing how the letters are grouped into words should not have affected the accuracy. One potential explanation is that the ANN is much better at classifying some letters than others. If the longer words tend to contain higher concentrations of those ``eaiser'' letters, then the ANN would have a higher accuracy on the larger word bucket. 
 
+In order to investigate this further, we looked at the accuracy of the ANN on each specific letter. As you can see from Figure 6, the results are highly variable, and there are even several letters that have 0\% accuracy.
+
+\begin{figure}[h]
+\centering
+\caption{Individual letter accuracies for the ANN}
+\includegraphics[scale=0.55]{img/letterPercentages.png}
+\end{figure} 
+
+One potential reason for this high variability is that the number of training examples for the different letters varies by an order of magnitude. The letters on which we did predicted very poorly tend to occur less often in English, and therefore we did not have as many training examples for those letters. This does not prove that the longer words contain less of the harder letters, but it supports that it is a valid hypothesis. 
 
 
 \section{Conclusion}
+
+While our models did significantly better than random guessing, we still expected higher accuraices that what we were able to obtain. It seems that the root of our issues with the HMM are directly tied to the low accuracies of the neural network. We believe a lot of the issues with the neural network were based on what turned out to be a very noisy and relatively sparse data set. 
+
+One step in trying to improve the model would be to use less noisy data. We could perform optical character recognition on typed letters instead of handwritten ones as this would minimize the amount of variation between each letter. 
+
+Another option would be to add more features to the data set other than just the character's pixel values. We could consult the computer vision literature to help with this additional feature engineering. 
+
 
 \bibliography{refs.bib}
 \bibliographystyle{plain}
