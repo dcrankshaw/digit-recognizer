@@ -22,7 +22,10 @@ The idea behind our approach is to compare how well two algorithms perform in co
 
 \section{Related Work}
 
-Feng et al.\cite{feng2008hidden} explores this idea of combining classification with a sequence model in order to perform handwriting recognition on a large vocabulary corpus. 
+Feng et al.\cite{feng2008hidden} explores this idea of combining classification with a sequence model in order to perform handwriting recognition on a large vocabulary corpus. They used a joint-boosting algorithm to not only identify the letters, but perform letter segemenation. They combined information about each individual letter with knowledge of the context of the letter in the form of a supervised HMM.
+
+Although the approach they take is more complicated, including the use of an emsemble of HMMs and many more features, their success indicates that the combination of classification with an HMM is a viable approach for the handwriting recognition problem.
+
 
 
 \section{The Algorithms and Data}
