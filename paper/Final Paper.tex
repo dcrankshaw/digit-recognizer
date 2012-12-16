@@ -9,6 +9,11 @@
 \usepackage[justification=centering]{caption}
 \usepackage{subcaption}
 \usepackage[left=1in,right=1in,top=1in,bottom=1in]{geometry}
+
+\usetikzlibrary{decorations.pathmorphing} % noisy shapes
+\usetikzlibrary{fit}					% fitting shapes to coordinates
+\usetikzlibrary{backgrounds}	% drawing the background after the foreground
+
 \author{Daniel Deutsch and Dan Crankshaw}
 \title{Machine Learning: Final Paper}
 \date{}
@@ -214,9 +219,102 @@ effectively in Java, we use the \href{http://math.nist.gov/javanumerics/jama/}{J
 
 \subsubsection*{Hidden Markov Model Theory}
 
-ADD DISCUSSION OF THEORY BEHIND HMM
+A Hidden Markov Model is a directed graphical model used for modeling sequences.
+In general, modeling the probability of a given sequence is difficult because
+the $n$th term in a sequence is dependent on all of the preceding terms. The key
+insight in a Markov Model is that we can model most sequences very accurately
+by looking at setting our current state dependent on only a fixed number of previous
+states. If we look at the $k$ previous states, we get a $k$th order Markov chain.
+A Hidden Markov Model extends this model to create a model such that an observation
+is conditionally dependent on all previous observations, freeing us of the restrictive
+assumption of a simple Markov chain. We introduce a set of latent nodes in an HMM such
+that the hidden nodes form a Markov chain. This can be seen because any two latent nodes
+$z_{n-1}$ and $z_{n+1}$ are independent conditioned on $z_n$. But there is always a path between any two
+observed variables through the latent nodes which are never blocked and so the current
+observed variables relies on all the previously observed variables ****CITE Textbook***.
+
+\begin{figure}[htbp]
+\centering
+\tikzstyle{observed}=[circle, thick, minimum size=1.2cm, draw=red!80, fill=purple!25]
+\tikzstyle{hidden}=[circle, thick, minimum size=1.2cm, draw=red!80]
+\tikzstyle{background}=[rectangle,
+                                                fill=gray!10,
+                                                inner sep=0.2cm,
+                                                rounded corners=5mm]
+
+\begin{tikzpicture}[>=latex,text height=1.5ex,text depth=0.25ex]
+  \matrix[row sep=0.5cm,column sep=0.5cm] {
+        \node (z_1) [hidden]{$\mathbf{z}_{1}$};   &
+        \node (x_1) [observed]{$\mathbf{x}_{1}$};   &
+      \\
+        \node (z_2)   [hidden]{$\mathbf{z}_2$};  &
+        \node (x_2)   [observed]{$\mathbf{x}_2$};  &
+      \\
+        \node (dots) {$\cdots$}; &
+                                 & %\node (bdots) {}; &
+      \\
+        \node (z_n-1)   [hidden]{$\mathbf{z}_{n-1}$};  &
+        \node (x_n-1)   [observed]{$\mathbf{x}_{n-1}$};  &
+      \\
+        \node (z_n)   [hidden]{$\mathbf{z}_{n}$};  &
+        \node (x_n)   [observed]{$\mathbf{x}_{n}$};  &
+      \\
+        \node (z_n+1)   [hidden]{$\mathbf{z}_{n+1}$};  &
+        \node (x_n+1)   [observed]{$\mathbf{x}_{n+1}$};  &
+      \\
+    };
+    \path[->]
+    (z_1) edge (z_2)
+    (z_2) edge (dots)
+    (dots) edge (z_n-1)
+    (z_n-1) edge (z_n)
+    (z_n) edge (z_n+1)
+
+    (z_1) edge (x_1)
+    (z_2) edge (x_2)
+    (z_n-1) edge (x_n-1)
+    (z_n) edge (x_n)
+    (z_n+1) edge (x_n+1)
+    ;
+    \begin{pgfonlayer}{background}
+        \node [background,
+                    fit=(z_1) (z_n+1) (x_1)] {};
+    \end{pgfonlayer}
+
+
+\end{tikzpicture}
+\caption{The graphical structure of a hidden Markov model}
+\end{figure}
+
+There are three sets of parameters that must be learned in an HMM\@. The transition probabilities
+$P(z | z_{n-1})$, which are the probabilities of transitioning from one hidden state to another,
+the emission probabilities $P(x | z)$, which are the probabilities of observing a particular observed state
+given the value of its corresponding latent variable, and the start probabilities $\pi$ which are the probalities
+governing the state of the first latent node in the chain.
+
+Many times a hidden Markov model does not have labeled data to train with, and must be trained using EM\@. In
+this case, an algorithm known as the Forward-Backward algorithm - a special case of the Sum-Product algorithm -
+can be used to efficiently perform the E-step of the algorithm. However, in our case we had labeled data
+and so could directly learn these parameters.
+
+Prediction with an HMM involves finding the most probable sequence of latent variables
+that would result in the values found for the observed variables. We use the max-sum
+algorithm, called the Viterbi algorithm in the context of hidden Markov models, to
+find this sequence. The Viterbi algorithm is a dynamic programming algorithm that
+for each state at each position in the sequence, only keeps track of the path leading
+to that state with the highest probability. This means that we need only keep track of
+$Z$ paths (where $Z$ is the number of possible states for a hidden node) at each position
+in the sequence for a total of $Z N$ instead of the $Z^N$ total paths possible. The most
+probable sequence can then be found by finding the value of the last hidden node that has
+the highest probability path associated with it and then backtracking through the sequence
+from there.
 
 \subsubsection*{Hidden Markov Model Implementation}
+
+Training the HMM is straightforward. There are three sets of parameters
+that we needed to learn to make predictions. The first is the emission
+probabilities for the ANN\@. 
+
 
 We trained the HMM in a supervised setting, directly learning the parameters
 from labeled data. We treat the actual letters that make up a word as the
@@ -224,9 +322,26 @@ hidden nodes ($z_i$) and the letters predicted by the ANN based on that
 input as the observed nodes ($x_i$). The first set of parameters that the HMM
 needs to learn are the emission probabilities $P(x_i | z_j)$. This is the probability
 that the ANN predicts an observed letter $x_i$ given a letter representing
-the state $z_j$. We learn these probabilities 
+the state $z_j$. We learn these probabilities by testing the already
+trained ANN on a set of labeled handwritten letter data (separate from the
+data used to train the ANN), and counting the number of times the ANN predicted
+each letter given a particular letter as input. We tested this with both a Bayesian
+approach (by learning $P(z|x)$ as well as separately learning $P(x)$ and $P(z)$
+from the training corpus) and a direct approach (learning $P(x|z)$ directly), and ultimately
+decided on a the non-Bayesian method.
 
-ADD NOTE ABOUT LEARNING EMISSION PROBS BAYESIAN VS NON BAYESIAN
+We then learned the transmission probabilities and the probability of each letter being the first
+letter of a word by reading through the training corpus. We counted the number of times each
+possible letter pair occurred and the number of times each letter was the first letter of a word and
+divided by the total number of letter pairs and words respectively. We found through experimentation
+that there were certain letter pairs that did not occur in training but did in testing, and so we
+decided to add in Laplacian (+1) smoothing for the transmission probabilities.
+
+For prediction, we implemented the Viterbi algorithm using two matrices, one to keep
+track of the sequence probabilities at each position in the sequence and one to keep track
+of the paths producing these sequences. Our implementation was based on the pseudocode
+found in the \href{http://en.wikipedia.org/wiki/Viterbi_algorithm#Pseudocode}
+{Wikipedia article} on the Viterbi algorithm.
 
 \subsection*{Work Completed}
 In order to successfully implement the combined classifier, we separately
@@ -246,27 +361,7 @@ size of the hidden layer did not significantly change the results, we
 hypothesized that even a working three-layer network would not help to improve
 the accuracy.
 
-Training the HMM is straightforward. There are three sets of parameters
-that we needed to learn to make predictions. The first is the emission
-probabilities for the ANN\@. This was learned by testing the already
-trained ANN on a set of labeled handwritten letter data (separate from the
-data used to train the ANN), and counting the number of times the ANN predicted
-each letter given a particular letter as input. We tested this with both a Bayesian
-approach (by learning $P(z|x)$ as well as separately learning $P(x)$ and $P(z)$
-from the training corpus) and a direct approach (learning $P(x|z)$ directly), and ultimately
-decided on a the non-Bayesian method.
-
-We then learned the transmission probabilities and the probability of each letter being the first
-letter of a word by reading through the training corpus. We counted the number of times each
-possible letter pair occurred and the number of times each letter was the first letter of a word and
-divided by the total number of letter pairs and words respectively. We found through experimentation
-that there were certain letter pairs that did not occur in training but did in testing, and so we
-decided to add in Laplacian (+1) smoothing for the transmission probabilities.
-
-In order to make predictions with the HMM, we use the Viterbi algorithm to perform inference
-on the HMM\. The Viterbi algorithm is a dynamic programming algorithm to find the most probable
-sequence given the set of observations (in this case the predictions of the ANN). The Viterbi
-
+TODO MOVE THIS SECTION TO ANN IMPLEMENTATION SECTION
 
 \section{Results}
 
@@ -379,7 +474,7 @@ located at the top of the image or the bottom, and even in some cases, the
 capital version of the letter is used. These variations within the data can
 pose a large problem for a neural network. It is asking a lot of the classifier
 to be able to identy the letter `a' anywhere in the image whether it is capital
-or not. 
+or not.
 
 \section{Conclusion}
 
@@ -390,11 +485,11 @@ network were based on what turned out to be a very noisy and relatively sparse d
 
 One step in trying to improve the model would be to use less noisy data. We could perform optical
 character recognition on typed letters instead of handwritten ones as this would minimize the amount
-of variation between each letter. 
+of variation between each letter.
 
 Another option would be to add more features to the data set other than just the character's pixel
 values. We could consult the computer vision literature to help with this additional feature
-engineering. 
+engineering.
 
 
 \bibliography{refs.bib}
@@ -410,8 +505,8 @@ to type in a word or phrase. The program will then generate and display a pictur
 word from the letter data we used. It will then try to predict the word and display the model's
 prediction below the user's input.
 
-To run, unzip \texttt{interactive-classifier.zip}. Then from within the interactive-recognizer
-directory the program can be run with the following commmand:\\\\
+The program can be run from within the \texttt{interactive-recognizer}
+directory with the following commmand:\\\\
 \texttt{\$ java -jar InteractiveRecognizer.jar}
 
 \section{Comparison to Proposal}
