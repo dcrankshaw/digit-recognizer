@@ -235,7 +235,7 @@ created an ANN and an HMM to independently perform their tasks. The ANN was
 implemented with both a two and three-layer network structure. We tried to
 find the optimal network structure to get the highest accuracy on the
 recognition of the letters because we knew that it would be extremely important
-for training the HMM\. If the ANN was unsuccessful, then the HMM would not work
+for training the HMM\@. If the ANN was unsuccessful, then the HMM would not work
 as well. After running several tests, the three-layer neural network did not
 perform as well as the two-layer network. It is possible that this is due to
 the algorithm being slightly more complicated to implement.
@@ -249,7 +249,7 @@ the accuracy.
 
 Training the HMM is straightforward. There are three sets of parameters
 that we needed to learn to make predictions. The first is the emission
-probabilities for the ANN\. This was learned by testing the already
+probabilities for the ANN\@. This was learned by testing the already
 trained ANN on a set of labeled handwritten letter data (separate from the
 data used to train the ANN), and counting the number of times the ANN predicted
 each letter given a particular letter as input. We tested this with both a Bayesian
@@ -278,7 +278,7 @@ percentage of fully correct words, and the average percentage of letters correct
 
 In the following figures, we compare the two algorithms with each of the three accuracy metrics. The
 neural network was not retrained between tests. Its results were used to calculate the emission
-probabilities for the HMM\. The HMM, however, was retrained with four different subsets of the
+probabilities for the HMM\@. The HMM, however, was retrained with four different subsets of the
 training corpus: the first 12.5\% of the corpus, the first 25\%, the first 50\%, and then all of the
 training data. Each algorithm was then tested on a random 10\% of the same test dataset, and the
 results were averaged. This process was repeated on three subsets of words: small (2-4 letters),
