@@ -1,0 +1,11 @@
+To run, sample program, use the command:
+
+java -jar InteractiveRecognizer.jar
+
+The data files need to be in the same directory as the jar file.
+The program will prompt for an input, and a handwritten version
+of the phrase you enter (can be multiple words) will be displayed.
+Then a seralized model will run its prediction on the input
+and display the result to the console.
+
+You can enter the input any number of times per program execution.
