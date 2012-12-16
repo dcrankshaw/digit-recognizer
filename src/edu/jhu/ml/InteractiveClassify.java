@@ -32,7 +32,7 @@ public class InteractiveClassify
 		Scanner scanner = new Scanner(System.in);
 		RandomWordGenerator generator = new RandomWordGenerator(0, 100, "data/corpus/test_corpus.txt", "data/letters/");
 		
-//		HMMPredictor predictor = (HMMPredictor) Classify.loadObject("path/to/seralized/hmm/predictor");
+		HMMPredictor predictor = (HMMPredictor) Classify.loadObject("path/to/seralized/hmm/predictor");
 
 		System.out.println("Enter a word to test:");
 		while (scanner.hasNext())
@@ -42,21 +42,21 @@ public class InteractiveClassify
 			List<Instance> word = generator.generateWord(input);
 			InteractiveClassify.displayWord(word);
 			
-//			List<Instance> newWord = new ArrayList<Instance>();
-//			for (Instance letter : word)
-//			{
-//
-//				if (((ClassificationLabel) letter.getLabel()).getLabel() != -1)
-//					newWord.add(letter);
-//				else
-//				{
-//					System.out.print(predictor.predictWord(newWord));
-//					System.out.print(" ");
-//					newWord.clear();
-//				}
-//			}
-//			
-//			System.out.println();
+			List<Instance> newWord = new ArrayList<Instance>();
+			for (Instance letter : word)
+			{
+
+				if (((ClassificationLabel) letter.getLabel()).getLabel() != -1)
+					newWord.add(letter);
+				else
+				{
+					System.out.print(predictor.predictWord(newWord));
+					System.out.print(" ");
+					newWord.clear();
+				}
+			}
+			
+			System.out.println();
 		}
 	}
 	

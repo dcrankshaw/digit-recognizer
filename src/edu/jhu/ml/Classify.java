@@ -42,13 +42,15 @@ public class Classify
     private static LinkedList<Option> options = new LinkedList<Option>();
     
     public static String ann_model_input = null;
+    
     public static String ann_training_data = "data/all/nnTrain.txt";
     public static String hmm_letter_training_data = "data/all/hmmTrain.txt";
-    //public static String train_corpus = "data/corpus/train_corpus.txt";
+    public static String train_corpus = "data/corpus/train_corpus.txt";
     public static String test_corpus = "data/corpus/test_corpus.txt";
     public static String test_letter_directory = "data/letters/";
     public static String output_directory = "data/output/";
     public static String ann_model_saved = "data/models/ann.model";
+    public static String hmm_model_saved = "data/models/hmm.model";
 
     
     
@@ -96,7 +98,7 @@ public class Classify
     	// Train the models
     	NeuralNetwork annPredictor = null;
     	if (ann_model_input != null) {
-    		annPredictor = (NeuralNetwork) Classify.loadObject(ann_model_input);
+    		annPredictor = (NeuralNetwork) Classify.loadObject("data/models/ann.model");
     	} else {
     		// Train Neural Network and save
     		DataReader annTrainDataReader = new DataReader(ann_training_data);
@@ -106,6 +108,11 @@ public class Classify
     		Classify.saveObject(annPredictor, ann_model_saved);
     	}
     	
+    	DataReader hmmTrainDataReader = new DataReader(hmm_letter_training_data);
+    	List<Instance> letterInstances = hmmTrainDataReader.read();
+    	HMMPredictor hmmPredictor = new HMMPredictor(annPredictor, train_corpus);
+    	hmmPredictor.train(letterInstances);
+    	Classify.saveObject(hmmPredictor, hmm_model_saved);
     	
     	/*RandomWordGenerator generator = new RandomWordGenerator(0, 100, test_corpus, test_letter_directory);
 
@@ -123,12 +130,12 @@ public class Classify
     	}*/
     	
     	
-    	String corpusBase = "data/corpus/train_corpus_";
-    	String outputBase = "data/output/results_corpus_";
-    	String suffix = ".txt";
-    	for (int i = 1; i <= 8; i *= 2) {
-    		hmmTests(corpusBase + i + suffix, annPredictor, outputBase + i + suffix);
-    	}
+//    	String corpusBase = "data/corpus/train_corpus_";
+//    	String outputBase = "data/output/results_corpus_";
+//    	String suffix = ".txt";
+//    	for (int i = 1; i <= 8; i *= 2) {
+//    		hmmTests(corpusBase + i + suffix, annPredictor, outputBase + i + suffix);
+//    	}
     }
     
     public static void hmmTests(String trainCorpus, NeuralNetwork annPredictor, String output) throws IOException {
