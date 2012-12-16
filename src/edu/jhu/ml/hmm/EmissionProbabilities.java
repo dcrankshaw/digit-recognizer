@@ -1,10 +1,15 @@
 package edu.jhu.ml.hmm;
 
+import java.io.Serializable;
 import java.util.HashMap;
 
-public class EmissionProbabilities {
+public class EmissionProbabilities implements Serializable {
 
-    private HashMap<Character, Integer> emissionCounts;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	private HashMap<Character, Integer> emissionCounts;
     private HashMap<Character, Double> emissionProbs;
     Character actual;
     private double totalObservations;

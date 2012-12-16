@@ -30,9 +30,9 @@ public class InteractiveClassify
 	public static void main(String[] args) throws IOException
 	{
 		Scanner scanner = new Scanner(System.in);
-		RandomWordGenerator generator = new RandomWordGenerator(0, 100, "data/corpus/test_corpus.txt", "data/letters/");
+		RandomWordGenerator generator = new RandomWordGenerator(0, 100, "test_corpus.txt", "letters/");
 		
-		HMMPredictor predictor = (HMMPredictor) Classify.loadObject("path/to/seralized/hmm/predictor");
+		HMMPredictor predictor = (HMMPredictor) Classify.loadObject("hmm.model");
 
 		System.out.println("Enter a word to test:");
 		while (scanner.hasNext())
@@ -50,11 +50,13 @@ public class InteractiveClassify
 					newWord.add(letter);
 				else
 				{
+					
 					System.out.print(predictor.predictWord(newWord));
 					System.out.print(" ");
 					newWord.clear();
 				}
 			}
+			System.out.println(predictor.predictWord(newWord));
 			
 			System.out.println();
 		}
