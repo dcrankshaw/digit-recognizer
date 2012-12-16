@@ -28,8 +28,7 @@ Neural Network. However, as we looked into it more we realized that this is esse
 problem and not very interesting. Instead, we decided to try handwritten word recognition,
 a more applicable and harder problem. We still wanted to compare the performance of multiple
 algorithms, and decided to stick with a Neural Network as one of the algorithms because it tends to
-perform very well on optical character recognition tasks. Its performance on the digit recognition
-benchmarks [cite****] reinforced our hypothesis that it would perform well on handwritten letter
+perform very well on optical character recognition tasks. Its \href{http://yann.lecun.com/exdb/mnist/index.html}{performance on the digit recognition benchmarks} reinforced our hypothesis that it would perform well on handwritten letter
 recognition. Because we were now looking at whole words, we thought it would be interesting to take
 into account the context of letters within a word when trying to identify them, taking advantage of
 patterns of the English language. The natural model for this type of problem is a sequence model,
@@ -322,8 +321,19 @@ the same probability of getting a starting down an incorrect subsequence at a gi
 word regardless of the length of the word. Because the longer words have more positions at which to
 start down a wrong sequence, and will tend to have more letters remaining in the word to be wrongly
 predicted once an incorrect subsequence is started down, longer words will tend to have more
-incorrect letters. *****However, this is still a hypothesis and we would need to run more
-experiments to verify this.
+incorrect letters. However, this is still a hypothesis and we would need to run more
+experiments to verify this. One possible experiment would be to create a frequency distribution of the letters for each of our word size buckets.
+
+Let $f_{x,\alpha}=\frac{\textrm{occurrences of }\alpha}{\textrm{size of }x}$ where $\alpha$ is a letter, and $x$ is a word bucket size. Let $S_\alpha$ be the accuracy of the ANN predicting $\alpha$ (see Figure 7). We can compute the expected total accuracy of each the ANN on each bucket by computing
+\begin{equation}
+E_x = \sum_{\alpha \in \{a,\ldots, z\}}f_{x,\alpha} s_\alpha
+\end{equation}
+
+If our hypothesis about longer words having higher frequencies of letters that the ANN does well on than shorter words, we would expect 
+\begin{equation*}
+E_{\textrm{small}} < E_{\textrm{medium}} < E_{\textrm{large}}
+\end{equation*}
+
 
 One interesting trend that we did not expect to see in the data is the slight increase in accuracy
 of the ANN on the data set as the word length increases. This was surprising because the ANN
