@@ -29,7 +29,7 @@
   \And
   Daniel Crankshaw \\
   Johns Hopkins University \\
-  {\tt dscrankshaw@gmail.com}}
+  {\tt dcrankshaw@jhu.edu}}
 
 \date{}
 
@@ -54,7 +54,7 @@ recognition. Because we were now looking at whole words, we thought it would be 
 into account the context of letters within a word when trying to identify them, taking advantage of
 patterns of the English language. The natural model for this type of problem is a sequence model,
 either a Hidden Markov Model or a Conditional Random Field. We decided to use an HMM after seeing
-the success of Feng et al.\cite{feng} using a classifier with an HMM.
+the success of Feng et al. \cite{feng} using a classifier with an HMM.
 
 Our work compares how well two algorithms - a Neural Network and an Hidden Markov Model Neural
 Network combination - perform on handwritten word recognition. The Artificial Neural Network (ANN) will
@@ -66,13 +66,13 @@ about the surrounding letters will help improve the accuracy of the model.
 
 \section{Related Work}
 
-Feng et al. explores this idea of combining classification with a sequence
+Feng et al.\ explores this idea of combining classification with a sequence
 model in order to perform handwriting recognition on a large vocabulary corpus. They used a
 joint-boosting algorithm to not only identify the letters, but perform letter segemenation. They
 combined information about each individual letter with knowledge of the context of the letter in the
 form of a supervised HMM.
 
-Although the approach they take is more complicated, including the use of an emsemble of HMMs and
+Although the approach they take is more complicated, including the use of an ensemble of HMMs and
 many more features, their success indicates that the combination of classification with an HMM is a
 viable approach for the handwriting recognition problem.
 
@@ -84,14 +84,16 @@ Stanford University}.
 The data is a collection of handwritten letters segemented from words in which all uppercase
 characters have been removed. We took the raw data and removed specific features included in the
 data that we intended not to use. The resulting data set is a list of binary pixel values of each
-character's 16 by 8 image.  \begin{figure}[h]
+character's 16 by 8 image.
+\begin{figure}[h]
     \centering
     \includegraphics{img/ml.jpg}
     \includegraphics{img/alphabet.jpg}
     \caption{An example of the data set}
+    \label{fig:exampleData}
 \end{figure}
 
-The data can often be difficult to read for a human as Figure 1 demonstrates.  Although it is
+The data can often be difficult to read for a human as Figure~\ref{fig:exampleData} demonstrates.  Although it is
 possible to make out each letter, this task is made much easier by looking at the context of the
 word and anticipating what the letter should be. The figure also illustrates that many of the same
 letters are a variety of different sizes and are placed at different locations within the image. The
@@ -155,9 +157,10 @@ is the global optimum.
 \draw [->] (x5) -- (x7);
 
 \end{tikzpicture}
+\label{fig:exampleANN}
 \end{figure}
 
-In Figure 2, each neuron is represented with a circle. Each weight parameter that is learned by the
+In Figure~\ref{fig:exampleANN}, each neuron is represented with a circle. Each weight parameter that is learned by the
 backpropagation algorithm is shown by a line that connects the neurons in each layer.
 
 {\bf Neural Network Implementation:} The ANN will be trained on the pixel values for each letter image. Each training example is a 16 by
@@ -253,7 +256,7 @@ assumption of a simple Markov chain. We introduce a set of latent nodes in an HM
 that the hidden nodes form a Markov chain. This can be seen because any two latent nodes
 $z_{n-1}$ and $z_{n+1}$ are independent conditioned on $z_n$. But there is always a path between any two
 observed variables through the latent nodes which are never blocked and so the current
-observed variables relies on all the previously observed variables\cite{bishop:607}.
+observed variables relies on all the previously observed variables \cite{bishop:607}.
 
 \begin{figure}[htbp]
 \centering
@@ -425,7 +428,7 @@ experiments to verify this. One possible experiment would be to create a frequen
 Let $f_{x,\alpha}=\frac{\textrm{occurrences of }\alpha}{\textrm{size of }x}$
 where $\alpha$ is a letter, and $x$ is a word bucket size. Let $S_\alpha$ be
 the accuracy of the ANN predicting $\alpha$ (see Figure~\ref{fig:letterAccuracies}). We can compute the
-expected total accuracy of each the ANN on each bucket by computing
+expected total accuracy of the ANN on each bucket by computing
 \begin{equation}
 E_x = \sum_{\alpha \in \{a,\ldots, z\}}f_{x,\alpha} s_\alpha
 \end{equation}
@@ -476,7 +479,7 @@ letter.
 
 Neural networks can be very slow and difficult to train. Sometimes, they
 require a large amount of data in order to converge to a good solution, and it
-helps if the data is somewhat normal. Figure 8 demonstrates the variety that
+helps if the data is somewhat normal. Figure~\ref{sampleLetters} demonstrates the variety that
 each letter contains. The letters can often be small or large, they can be
 located at the top of the image or the bottom, and even in some cases, the
 capital version of the letter is used. These variations within the data can
