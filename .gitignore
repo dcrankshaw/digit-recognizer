@@ -6,12 +6,8 @@
 *.settings
 *.project
 
-<<<<<<< HEAD
 *.classpath
 *.project
 *.DS_Store
 
-=======
-*.DS_Store
->>>>>>> hmm-dev
 *.pdf
