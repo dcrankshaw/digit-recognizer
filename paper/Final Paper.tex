@@ -1,5 +1,9 @@
-\documentclass[11pt,a4paper,twocolumn]{article}
-\usepackage[utf8]{inputenc}
+
+\documentclass[11pt,letterpaper]{article}
+\usepackage{naaclhlt2010}
+\usepackage{times}
+\usepackage{latexsym}
+
 \usepackage{amsmath}
 \usepackage{amsfonts}
 \usepackage{amssymb}
@@ -14,9 +18,21 @@
 \usetikzlibrary{fit}					% fitting shapes to coordinates
 \usetikzlibrary{backgrounds}	% drawing the background after the foreground
 
-\author{Daniel Deutsch and Dan Crankshaw}
+
+\setlength\titlebox{6.5cm}    % Expanding the titlebox
+
 \title{Machine Learning: Final Paper}
+
+\author{Daniel Deutsch\\
+  Johns Hopkins University\\
+  {\tt ddeutsch@jhu.edu}
+  \And
+  Daniel Crankshaw \\
+  Johns Hopkins University \\
+  {\tt dscrankshaw@gmail.com}}
+
 \date{}
+
 \begin{document}
 \maketitle
 
@@ -38,7 +54,7 @@ recognition. Because we were now looking at whole words, we thought it would be 
 into account the context of letters within a word when trying to identify them, taking advantage of
 patterns of the English language. The natural model for this type of problem is a sequence model,
 either a Hidden Markov Model or a Conditional Random Field. We decided to use an HMM after seeing
-the success of Feng et al.\cite{feng2008hidden} using a classifier with an HMM.
+the success of Feng et al.\cite{feng} using a classifier with an HMM.
 
 Our work compares how well two algorithms - a Neural Network and an Hidden Markov Model Neural
 Network combination - perform on handwritten word recognition. The Artificial Neural Network (ANN) will
@@ -50,7 +66,7 @@ about the surrounding letters will help improve the accuracy of the model.
 
 \section{Related Work}
 
-Feng et al.\cite{feng2008hidden} explores this idea of combining classification with a sequence
+Feng et al. explores this idea of combining classification with a sequence
 model in order to perform handwriting recognition on a large vocabulary corpus. They used a
 joint-boosting algorithm to not only identify the letters, but perform letter segemenation. They
 combined information about each individual letter with knowledge of the context of the letter in the
@@ -60,11 +76,9 @@ Although the approach they take is more complicated, including the use of an ems
 many more features, their success indicates that the combination of classification with an HMM is a
 viable approach for the handwriting recognition problem.
 
-\section{The Algorithms and Data}
+\section{The Data and Algorithms}
 
-\subsection*{Data}
-
-The data that will be used in the training and evaluation of the ANN and the HMM was gathered from
+{\bf Data:} The data that will be used in the training and evaluation of the ANN and the HMM was gathered from
 \href{http://ai.stanford.edu/~btaskar/ocr/}{an optical character recognition dataset from
 Stanford University}.
 The data is a collection of handwritten letters segemented from words in which all uppercase
@@ -91,16 +105,12 @@ plain-text copy of \emph{Moby Dick}. We cleaned the corpus by converting all let
 and removing all non-alphabetic characters (i.e.\ numbers and punctuation). Our training corpus is
 the first half of the text and the test corpus is the second half of the text.
 
-\subsection*{The Algorithms}
-
-The two algorithms that we intend to use to accomplish the character recognition goal are an
+{\bf The Algorithms:} The two algorithms that we intend to use to accomplish the character recognition goal are an
 artificial neural network (ANN) and a hidden markov model (HMM). The idea is to compare the accuracy
 of the ANN to a combination of both the ANN and HMM to see if adding knowledge of word context to
 the model increases accuracy on the datasets.
 
-\subsubsection*{Neural Network Theory}
-
-The original idea behind the artifical neural network was to simulate connections between neurons in
+{\bf Neural Network Theory:} The original idea behind the artifical neural network was to simulate connections between neurons in
 the brain. Each neuron receives a message, performs some type of computation, and sends a new
 message to the neurons to which it is connected. For the artificial neural network, the intial input
 is derived from the features of a data point. Based on this input, each neuron computes an
@@ -150,9 +160,7 @@ is the global optimum.
 In Figure 2, each neuron is represented with a circle. Each weight parameter that is learned by the
 backpropagation algorithm is shown by a line that connects the neurons in each layer.
 
-\subsubsection*{Neural Network Implementation}
-
-The ANN will be trained on the pixel values for each letter image. Each training example is a 16 by
+{\bf Neural Network Implementation:} The ANN will be trained on the pixel values for each letter image. Each training example is a 16 by
 8 pixel image which amounts to an input size of 128. In order to help improve the accuracy of the
 classifier, we included a bias term on the input and hidden layers. Therefore, the input size for
 the ANN is 129 nodes.
@@ -216,10 +224,24 @@ Since it is possible to describe a neural network as a series of matrix multipli
 implementation will involve some non-trivial linear algebra functions. In order to do this
 effectively in Java, we use the \href{http://math.nist.gov/javanumerics/jama/}{Java Matrix Package}.
 
+In order to successfully implement the combined classifier, we separately
+created an ANN and an HMM to independently perform their tasks. The ANN was
+implemented with both a two and three-layer network structure. We tried to
+find the optimal network structure to get the highest accuracy on the
+recognition of the letters because we knew that it would be extremely important
+for training the HMM\@. If the ANN was unsuccessful, then the HMM would not work
+as well. After running several tests, the three-layer neural network did not
+perform as well as the two-layer network. It is possible that this is due to
+the algorithm being slightly more complicated to implement.
 
-\subsubsection*{Hidden Markov Model Theory}
+Once we had an accurate two-layer network implementation working, we varied the
+hyperparameter which specificed the number of nodes in the hidden layer to see
+if it affected the accuracy, which was previously discussed. Since altering the
+size of the hidden layer did not significantly change the results, we
+hypothesized that even a working three-layer network would not help to improve
+the accuracy.
 
-A Hidden Markov Model is a directed graphical model used for modeling sequences.
+{\bf Hidden Markov Model Theory:} A Hidden Markov Model is a directed graphical model used for modeling sequences.
 In general, modeling the probability of a given sequence is difficult because
 the $n$th term in a sequence is dependent on all of the preceding terms. The key
 insight in a Markov Model is that we can model most sequences very accurately
@@ -231,7 +253,7 @@ assumption of a simple Markov chain. We introduce a set of latent nodes in an HM
 that the hidden nodes form a Markov chain. This can be seen because any two latent nodes
 $z_{n-1}$ and $z_{n+1}$ are independent conditioned on $z_n$. But there is always a path between any two
 observed variables through the latent nodes which are never blocked and so the current
-observed variables relies on all the previously observed variables ****CITE Textbook***.
+observed variables relies on all the previously observed variables\cite{bishop:607}.
 
 \begin{figure}[htbp]
 \centering
@@ -309,9 +331,8 @@ probable sequence can then be found by finding the value of the last hidden node
 the highest probability path associated with it and then backtracking through the sequence
 from there.
 
-\subsubsection*{Hidden Markov Model Implementation}
 
-Training the HMM is straightforward. There are three sets of parameters
+{\bf Hidden Markov Model Implementation:} Training the HMM is straightforward. There are three sets of parameters
 that we needed to learn to make predictions. The first is the emission
 probabilities for the ANN\@. 
 
@@ -342,26 +363,6 @@ track of the sequence probabilities at each position in the sequence and one to 
 of the paths producing these sequences. Our implementation was based on the pseudocode
 found in the \href{http://en.wikipedia.org/wiki/Viterbi_algorithm#Pseudocode}
 {Wikipedia article} on the Viterbi algorithm.
-
-\subsection*{Work Completed}
-In order to successfully implement the combined classifier, we separately
-created an ANN and an HMM to independently perform their tasks. The ANN was
-implemented with both a two and three-layer network structure. We tried to
-find the optimal network structure to get the highest accuracy on the
-recognition of the letters because we knew that it would be extremely important
-for training the HMM\@. If the ANN was unsuccessful, then the HMM would not work
-as well. After running several tests, the three-layer neural network did not
-perform as well as the two-layer network. It is possible that this is due to
-the algorithm being slightly more complicated to implement.
-
-Once we had an accurate two-layer network implementation working, we varied the
-hyperparameter which specificed the number of nodes in the hidden layer to see
-if it affected the accuracy, which was previously discussed. Since altering the
-size of the hidden layer did not significantly change the results, we
-hypothesized that even a working three-layer network would not help to improve
-the accuracy.
-
-TODO MOVE THIS SECTION TO ANN IMPLEMENTATION SECTION
 
 \section{Results}
 
@@ -398,7 +399,6 @@ medium (5-8 letters), and large (9+ letters) words.
 \includegraphics[scale=0.55]{img/wordCorrectness.png}
 \label{fig:lettersCorrectPerWord}
 \end{figure}
-
 
 \section{Analysis}
 
@@ -444,7 +444,7 @@ some letters than others. If the longer words tend to contain higher concentrati
 ``eaiser'' letters, then the ANN would have a higher accuracy on the larger word bucket. 
 
 In order to investigate this further, we looked at the accuracy of the ANN on each specific letter.
-As you can see from Figure~\ref{sampleLetters}, the results are highly variable, and there are even several letters
+As you can see from Figure~\ref{fig:letterAccuracies}, the results are highly variable, and there are even several letters
 that have 0\% accuracy.
 
 \begin{figure}[h]
@@ -500,8 +500,20 @@ values. We could consult the computer vision literature to help with this additi
 engineering.
 
 
-\bibliography{refs.bib}
-\bibliographystyle{plain}
+\begin{thebibliography}{}
+
+\bibitem[\protect\citename{{Bishop}}]{bishop:607}
+\newblock Christopher M. Bishop.
+\newblock 2006.
+\newblock {\em Pattern Recognition and Machine Learning (Information Science and Statistics)}.
+\newblock Springer-Verlag New York, Inc.
+
+\bibitem[\protect\citename{Feng et al.}]{feng}
+\newblock S. Feng, N. Howe, and R. Manmatha.
+\newblock 2008.
+\newblock {\em A hidden Markov model for alphabet-soup word recognition}.
+
+\end{thebibliography}
 
 
 \newpage
@@ -523,5 +535,6 @@ met with Professor Dredze to dicuss our new project and were not required to sub
 proposal. Therefore, we don't really have an applicable proposal to compare the our progress to.
 However, we do discuss the evolution of our project from the proposal to its current form
 in our introduction.
+
 
 \end{document}
