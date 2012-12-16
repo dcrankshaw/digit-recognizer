@@ -18,18 +18,31 @@
 \section{Introduction}
 
 A common problem in the field of machine learning is correctly identifying
-handwritten words. The applications of
+handwritten numbers or words. The applications of
 such a model are clear, and have already been implemented in situations like
 the US postal service to sort mail based on the zip code.
 
-The idea behind our approach is to compare how well two algorithms perform in
-completing the optical character recognition task. The first algorithm is an
-artifical neural network that will try to classify characters based on
-their pixel values. The second algorithm is a combination of the previous
-neural network and a hidden markov model, which will take into account the
-probability of specific letter combinations. We hope that the addition of contextual
-about the surrounding letters will help improve the accuracy of the neural
-network.
+We originally were going to look at individual numerical digit recognition using the famous
+MNIST handwritten digit dataset, comparing the performance of K-Nearest-Neighbors and a
+Neural Network. However, as we looked into it more we realized that this is essentially a solved
+problem and not very interesting. Instead, we decided to try handwritten word recognition,
+a more applicable and harder problem. We still wanted to compare the performance of multiple
+algorithms, and decided to stick with a Neural Network as one of the algorithms because it tends to
+perform very well on optical character recognition tasks. Its performance on the digit recognition
+benchmarks [cite****] reinforced our hypothesis that it would perform well on handwritten letter
+recognition. Because we were now looking at whole words, we thought it would be interesting to take
+into account the context of letters within a word when trying to identify them, taking advantage of
+patterns of the English language. The natural model for this type of problem is a sequence model,
+either a Hidden Markov Model or a Conditional Random Field. We decided to use an HMM after seeing
+the success of Feng et al.\cite{feng2008hidden} using a classifier with an HMM.
+
+Our work compares how well two algorithms - a Neural Network and an Hidden Markov Model Neural
+Network combination - perform on handwritten word recognition. The Artificial Neural Network (ANN) will
+try to classify individual letters in a word based on their pixel values. The second algorithm will
+use the ANN to classify individual letters as well, but will use the HMM to attempt to correct
+misclassifications by looking at the probabilities of surrounding letter combinations and common
+mistakes that the ANN makes. We hope that the addition of contextual information
+about the surrounding letters will help improve the accuracy of the model.
 
 \section{Related Work}
 
@@ -60,22 +73,19 @@ character's 16 by 8 image.  \begin{figure}[h]
     \caption{An example of the data set}
 \end{figure}
 
-The data can often be difficult to read for a human as Figure 1 demonstrates.
-Although it is possible to make out each letter, this task is made much
-easier by looking at the context of the word and anticipating what the letter
-should be. The figure also illustrates that many of the same letters are a
-variety of different sizes and are placed at different locations within the
-image. The quality of the data may make it difficult for the ANN to learn how
-to recognize each letter. However, the combination of the ANN and the HMM may
-be a good simulation of how a human would approach the problem: try to
-recognize the letter, then use context clues to figure out which character it
-is.
+The data can often be difficult to read for a human as Figure 1 demonstrates.  Although it is
+possible to make out each letter, this task is made much easier by looking at the context of the
+word and anticipating what the letter should be. The figure also illustrates that many of the same
+letters are a variety of different sizes and are placed at different locations within the image. The
+quality of the data may make it difficult for the ANN to learn how to recognize each letter.
+However, the combination of the ANN and the HMM may be a good simulation of how a human would
+approach the problem: try to recognize the letter, then use context clues to figure out which
+character it is.
 
-The corpus used to learn the transmission probabilities for the HMM is a
-a Project Gutenberg plain-text copy of \emph{Moby Dick}. We cleaned the
-corpus by converting all letters to lowercase and removing all non-alphabetic
-characters (i.e.\ numbers and punctuation). Our training corpus is the first
-half of the text and the test corpus is the second half of the text.
+The corpus used to learn the transmission probabilities for the HMM is a a Project Gutenberg
+plain-text copy of \emph{Moby Dick}. We cleaned the corpus by converting all letters to lowercase
+and removing all non-alphabetic characters (i.e.\ numbers and punctuation). Our training corpus is
+the first half of the text and the test corpus is the second half of the text.
 
 \subsection*{The Algorithms}
 
@@ -181,7 +191,7 @@ network will train faster, we will use a network with one hidden layer and 25 no
 in that layer.
 
 This data is indicative of our belief that the neural network might have some
-difficultly classifying this dataset. The input seems to be a relatively
+difficulty classifying this dataset. The input seems to be a relatively
 difficult dataset with some noise. Since adding more nodes to the hidden layer
 did not imporve the accuracy significantly enough, it's evident that the
 network is having a hard time learning the data. It may have reached its
@@ -205,6 +215,7 @@ effectively in Java, we use the \href{http://math.nist.gov/javanumerics/jama/}{J
 
 \subsubsection*{Hidden Markov Model Theory}
 
+ADD DISCUSSION OF THEORY BEHIND HMM
 
 \subsubsection*{Hidden Markov Model Implementation}
 
@@ -216,20 +227,53 @@ needs to learn are the emission probabilities $P(x_i | z_j)$. This is the probab
 that the ANN predicts an observed letter $x_i$ given a letter representing
 the state $z_j$. We learn these probabilities 
 
-ADD DISCUSSION OF THEORY BEHIND HMM
 ADD NOTE ABOUT LEARNING EMISSION PROBS BAYESIAN VS NON BAYESIAN
 
 \subsection*{Work Completed}
-In order to successfully implement the combined classifier, we separately created an ANN and an HMM to indepdently perform their tasks. The ANN was implemented with both a two- and three-layer network structure. We tried to find the optimal network structure to get the highest accuracy on the recognition of the letters because we knew that it would be extremely important for training the HMM. If the ANN was unsuccessful, then the HMM would not work as well. After running several tests, the three-layer neural network did not perform as well as the two-layer network. It is possible that this is due to the algorithm being slightly more complicated to implement. 
+In order to successfully implement the combined classifier, we separately
+created an ANN and an HMM to independently perform their tasks. The ANN was
+implemented with both a two and three-layer network structure. We tried to
+find the optimal network structure to get the highest accuracy on the
+recognition of the letters because we knew that it would be extremely important
+for training the HMM\. If the ANN was unsuccessful, then the HMM would not work
+as well. After running several tests, the three-layer neural network did not
+perform as well as the two-layer network. It is possible that this is due to
+the algorithm being slightly more complicated to implement.
 
-Once we had an accurate two-layer network implementation working, we varied the hyperparameter which specificed the number of nodes in the hidden layer to see if it affected the accuracy, which was previously discussed. Since altering the size of the hidden layer did not significantly change the results, we hypothesized that even a working three-layer network would not help to improve the accuracy.
+Once we had an accurate two-layer network implementation working, we varied the
+hyperparameter which specificed the number of nodes in the hidden layer to see
+if it affected the accuracy, which was previously discussed. Since altering the
+size of the hidden layer did not significantly change the results, we
+hypothesized that even a working three-layer network would not help to improve
+the accuracy.
 
-DAN C. ENTER WHAT YOU DID FOR THE HMM.
+Training the HMM is straightforward. There are three sets of parameters
+that we needed to learn to make predictions. The first is the emission
+probabilities for the ANN\. This was learned by testing the already
+trained ANN on a set of labeled handwritten letter data (separate from the
+data used to train the ANN), and counting the number of times the ANN predicted
+each letter given a particular letter as input. We tested this with both a Bayesian
+approach (by learning $P(z|x)$ as well as separately learning $P(x)$ and $P(z)$
+from the training corpus) and a direct approach (learning $P(x|z)$ directly), and ultimately
+decided on a the non-Bayesian method.
+
+We then learned the transmission probabilities and the probability of each letter being the first
+letter of a word by reading through the training corpus. We counted the number of times each
+possible letter pair occurred and the number of times each letter was the first letter of a word and
+divided by the total number of letter pairs and words respectively. We found through experimentation
+that there were certain letter pairs that did not occur in training but did in testing, and so we
+decided to add in Laplacian (+1) smoothing for the transmission probabilities.
+
+In order to make predictions with the HMM, we use the Viterbi algorithm to perform inference
+on the HMM\. The Viterbi algorithm is a dynamic programming algorithm to find the most probable
+sequence given the set of observations (in this case the predictions of the ANN). The Viterbi
+
 
 \section{Results}
 
-In order to compare the implementation and accuracy of the ANN versus the HMM-ANN combination, we
-compared their performances with three different metrics: the percentage of letters correct, the
+In order to compare the implementation and accuracy of the ANN versus the
+HMM-ANN combination, we compared their performances with three different
+metrics: the percentage of letters correct, the
 percentage of fully correct words, and the average percentage of letters correct per word.
 
 In the following figures, we compare the two algorithms with each of the three accuracy metrics. The
@@ -273,7 +317,7 @@ sequence, it tends to continue to do so because of the weight of the transmissio
 predicting the most probable sequence. In order to get a sequence back on the right track, we would
 need a high correct emission probability and a high probability of transitioning from the previous
 incorrect letter to the current correct letter, which effectively breaks the reasons behind using a
-HMM. Because we use the same ANN-HMM combination on our short and long word predictions, we assume
+HMM\. Because we use the same ANN-HMM combination on our short and long word predictions, we assume
 the same probability of getting a starting down an incorrect subsequence at a given position in a
 word regardless of the length of the word. Because the longer words have more positions at which to
 start down a wrong sequence, and will tend to have more letters remaining in the word to be wrongly
@@ -304,7 +348,11 @@ tend to occur less often in English, and therefore we did not have as many train
 those letters. This does not prove that the longer words contain less of the harder letters, but it
 supports that it is a valid hypothesis. 
 
-Additionally, the accuracy of the neural network even on those examples where it performs well could still be improved. After analyzing the data a little bit more to investigate if the noise could be a problem, we hypothesize that there are a few reasons why the neural network has trouble learning to recognize each letter. 
+Additionally, the accuracy of the neural network even on those examples where
+it performs well could still be improved. After analyzing the data a little bit
+more to investigate if the noise could be a problem, we hypothesize that there
+are a few reasons why the neural network has trouble learning to recognize each
+letter. 
 
 \begin{figure}[h]
 \centering
@@ -313,7 +361,15 @@ Additionally, the accuracy of the neural network even on those examples where it
 \includegraphics[scale=1.0]{img/ee.jpg}
 \end{figure}
 
-Neural networks can be very slow and difficult to train. Sometimes, they require a large amount of data in order to converge to a good solution, and it helps if the data is somewhat normal. Figure 8 demonstrates the variety that each letter contains. The letters can often be small or large, they can be located at the top of the image or the bottom, and even in some cases, the capital version of the letter is used. These variations within the data can pose a large problem for a neural network. It is asking a lot of the classifier to be able to identy the letter `a' anywhere in the image whether it is capital or not. 
+Neural networks can be very slow and difficult to train. Sometimes, they
+require a large amount of data in order to converge to a good solution, and it
+helps if the data is somewhat normal. Figure 8 demonstrates the variety that
+each letter contains. The letters can often be small or large, they can be
+located at the top of the image or the bottom, and even in some cases, the
+capital version of the letter is used. These variations within the data can
+pose a large problem for a neural network. It is asking a lot of the classifier
+to be able to identy the letter `a' anywhere in the image whether it is capital
+or not. 
 
 \section{Conclusion}
 
@@ -337,8 +393,15 @@ engineering.
 
 \newpage
 \appendix
-\section{First Appendix}
+\section{Interactive Classification}
 
 TALK ABOUT THE INTERACTIVECLASSIFY.JAVA CLASS
+
+\section{Comparison to Proposal}
+We ended up changing our project substantially after receiving feedback on our original proposal. We
+met with Professor Dredze to dicuss our new project and were not required to submit an entire new
+proposal. Therefore, we don't really have an applicable proposal to compare the our progress to.
+However, we do discuss the evolution of our project from the proposal to its current form
+in our introduction.
 
 \end{document}
